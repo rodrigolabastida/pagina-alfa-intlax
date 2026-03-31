@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Privacidad Absoluta -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex">
+    
+    <title>Intlax.cloud | Bóveda ALFA</title>
+    
+    <!-- Fuentes y FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --primary: #FFD700;
+            --text-main: #f5f5f5;
+            --text-muted: #888;
+            --border-color: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- PANTALLA DE LOGIN (JS BLOCK) --- */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: #000; z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            flex-direction: column; padding: 20px;
+        }
+
+        .login-box {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 40px; border-radius: 12px;
+            width: 100%; max-width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+        }
+
+        .login-box h1 { font-family: 'Anton', sans-serif; letter-spacing: 2px; color: var(--primary); margin-bottom: 5px; font-size: 2rem; }
+        .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; }
+
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .input-group input {
+            width: 100%; padding: 12px 15px; border-radius: 6px;
+            border: 1px solid var(--border-color); background-color: #000;
+            color: #fff; font-size: 1rem; outline: none; transition: border-color 0.3s;
+        }
+        .input-group input:focus { border-color: var(--primary); }
+
+        .btn-submit {
+            width: 100%; background-color: var(--primary); color: #000;
+            border: none; padding: 14px; border-radius: 6px;
+            font-size: 1rem; font-weight: 800; cursor: pointer;
+            transition: 0.3s; text-transform: uppercase; margin-top: 10px;
+        }
+        .btn-submit:hover { filter: brightness(1.2); }
+
+        #error-msg { color: #ff4444; font-size: 0.85rem; margin-top: 15px; display: none; }
+
+        /* --- DASHBOARD INTERNO --- */
+        #dashboard-screen { display: none; padding: 0 20px 60px; }
+
+        header.dash-header {
+            padding: 30px 0; margin-bottom: 40px; border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .logo-font { font-family: 'Anton', sans-serif; font-size: 1.5rem; letter-spacing: 1px; }
+        .logo-font span { color: var(--primary); }
+        
+        .logout-btn { background: none; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: 0.3s; }
+        .logout-btn:hover { border-color: #ff4444; color: #ff4444; }
+
+        .container { max-width: 1000px; margin: 0 auto; width: 100%; }
+        .page-title { font-size: 1.8rem; font-weight: 300; margin-bottom: 30px; color: var(--text-muted); }
+        .page-title strong { color: #fff; font-weight: 800; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 30px; transition: transform 0.2s, border-color 0.2s;
+        }
+        .card:hover { border-color: var(--primary); transform: translateY(-3px); }
+        
+        .card-icon { font-size: 2rem; color: var(--primary); margin-bottom: 20px; }
+        .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; }
+        
+        .link-list { list-style: none; }
+        .link-list li { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-color); }
+        .link-list li:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        
+        .link-item { display: flex; align-items: center; justify-content: space-between; color: var(--text-main); text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
+        .link-item:hover { color: var(--primary); }
+        .link-item i { font-size: 0.8rem; color: var(--text-muted); }
+        .link-item:hover i { color: var(--primary); }
+
+        .badge-new { background: #ff3b3b; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; margin-left: 10px; }
+
+    </style>
+</head>
+<body>
+
+    <!-- BLOQUEO: PANTALLA LOGIN -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h1>BÓVEDA ALFA</h1>
+            <p>Acceso restringido para personal autorizado.</p>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>Usuario / ID</label>
+                    <input type="text" id="username" placeholder="Ingresa tu ID" autocomplete="off" required>
+                </div>
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit">Desbloquear</button>
+                <div id="error-msg"><i class="fas fa-exclamation-triangle"></i> Credenciales incorrectas o denegadas.</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CONTENIDO: DASHBOARD INTERNO -->
+    <div id="dashboard-screen">
+        <div class="container">
+            <header class="dash-header">
+                <div class="logo-font">INTLAX<span>.CLOUD</span> ALFA</div>
+                <button class="logout-btn" onclick="logout()">Cerrar Sesión <i class="fas fa-sign-out-alt"></i></button>
+            </header>
+
+            <h2 class="page-title">Bienvenido de vuelta, <strong>Rodrigo Labs</strong>.</h2>
+
+            <div class="grid">
+                
+                <!-- Tarjeta: Cotizaciones -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                    <h3 class="card-title">Cotizaciones Comerciales</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="../tiktokcoti.html" class="link-item" target="_blank">
+                                <span><i class="fab fa-tiktok" style="margin-right: 8px;"></i> Campaña TikTok</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="../coti/cronica-y-contexto.html" class="link-item" target="_blank">
+                                <span><i class="fas fa-newspaper" style="margin-right: 8px;"></i> Crónica y Contexto</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tarjeta: Reportes Generados -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-chart-pie"></i></div>
+                    <h3 class="card-title">Reportes de Rendimiento <span class="badge-new">Python</span></h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
+                        Directorio automatizado. Los HTML de análisis generados por tus scripts irán apareciendo en la raíz de esta ruta.
+                    </p>
+                    <ul class="link-list">
+                        <li>
+                            <a href="../reportes/" class="link-item" target="_blank" style="color: var(--primary); font-weight: 600;">
+                                <span><i class="fas fa-folder-open" style="margin-right: 8px;"></i> Abrir Carpeta Raíz de Reportes</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tarjeta: Herramientas Rápidas -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-satellite-dish"></i></div>
+                    <h3 class="card-title">Centro de Mando</h3>
+                    <ul class="link-list">
+                        <li>
+                            <a href="../index.html" class="link-item">
+                                <span><i class="fas fa-globe" style="margin-right: 8px;"></i> Ver Sitio Web Público</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGICA DE SEGURIDAD (CLIENT-SIDE) -->
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const errorMsg = document.getElementById('error-msg');
+        
+        // Función de Desbloqueo
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            
+            // Credenciales maestras
+            if (user === 'rodrigo_labs' && pass === 'Kisesss1.') {
+                // Éxito: Ocultar login y revelar el tablero
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard-screen').style.display = 'block';
+                // Guardar en sesión temporal para no pedir contraseñas si refrescan rápido (opcional)
+                sessionStorage.setItem('alfa_auth', 'true');
+            } else {
+                // Fallo
+                errorMsg.style.display = 'block';
+                // Temblor de tarjeta de error (opcional)
+                const box = document.querySelector('.login-box');
+                box.style.transform = 'translateX(-10px)';
+                setTimeout(() => box.style.transform = 'translateX(10px)', 100);
+                setTimeout(() => box.style.transform = 'translateX(-10px)', 200);
+                setTimeout(() => box.style.transform = 'translateX(0)', 300);
+            }
+        });
+
+        // Alargar sesión si ya se loguearon y refrescaron la página
+        window.addEventListener('load', () => {
+            if (sessionStorage.getItem('alfa_auth') === 'true') {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard-screen').style.display = 'block';
+            }
+        });
+
+        // Función de Cerrar Sesión
+        function logout() {
+            sessionStorage.removeItem('alfa_auth');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            errorMsg.style.display = 'none';
+            document.getElementById('dashboard-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

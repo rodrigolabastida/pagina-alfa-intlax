@@ -104,9 +104,8 @@
 
         /* --- HERO SECTION --- */
         .hero {
-            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.95)), url('assets/img/hero-bg.png');
-            background-size: cover;
-            background-position: center;
+            position: relative;
+            background-color: #000;
             color: white;
             padding: 90px 20px;
             text-align: center;
@@ -115,6 +114,26 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            pointer-events: none; /* Let clicks pass through to particles */
+        }
+        
+        .hero-content .btn-primary { 
+            pointer-events: auto; /* Buttons must be clickable */
         }
 
         .hero h1 { font-size: 3.2rem; line-height: 1.1; margin-bottom: 20px; }
@@ -264,12 +283,15 @@
     </header>
 
     <section class="hero">
-        <h1>TU NEGOCIO, <br><span class="text-yellow">NIVEL EXPERTO</span></h1>
-        <p class="hero-subtitle">DE MÉXICO PARA EL MUNDO</p> 
-        <p style="max-width: 600px; margin-bottom: 30px;">
-            Ingeniería web y comunicación estratégica desde Calpulalpan.
-        </p>
-        <a href="#contacto" class="btn-primary">Cotizar Proyecto</a>
+        <div id="particles-js"></div>
+        <div class="hero-content">
+            <h1>POTENCIAMOS TU <br><span class="text-yellow">COMUNICACIÓN</span></h1>
+            <p class="hero-subtitle">AGENCIA DE DESARROLLO DE SOFTWARE Y ESTRATEGIA DIGITAL</p> 
+            <p style="max-width: 600px; margin-bottom: 30px; margin-left: auto; margin-right: auto;">
+                Ingeniería web y comunicación interactiva desde Calpulalpan para todo México y el mundo.
+            </p>
+            <a href="#contacto" class="btn-primary">Cotizar Proyecto</a>
+        </div>
     </section>
 
     <section class="section-white" id="servicios">
@@ -300,7 +322,7 @@
             <div class="grid-container">
                 
                 <article class="project-card">
-                    <img src="https://image.thum.io/get/width/1000/crop/800/https://patosviajeros.com/" alt="Patos Viajeros" class="project-img"> 
+                    <img src="assets/img/patos_viajeros.png" alt="Patos Viajeros" class="project-img"> 
                     <div class="project-content">
                         <span class="category-badge">Negocio Local / Turismo</span>
                         <h3 style="margin-bottom: 10px;">Patos Viajeros</h3>
@@ -310,17 +332,17 @@
                 </article>
 
                 <article class="project-card">
-                    <img src="https://image.thum.io/get/width/1000/crop/800/https://www.reddearboles.org/" alt="Fundación Red de Árboles" class="project-img">
+                    <img src="assets/img/fundacion_arboles.png" alt="Fundación de árboles" class="project-img">
                     <div class="project-content">
-                        <span class="category-badge">Fundación Red de Árboles</span>
-                        <h3 style="margin-bottom: 10px;">COMECOT</h3>
-                        <p style="color: #ccc; font-size: 0.9rem;">Plataforma oficial de una Fundación Red de Árboles.</p>
+                        <span class="category-badge">Ecología y Medio Ambiente</span>
+                        <h3 style="margin-bottom: 10px;">Fundación de árboles</h3>
+                        <p style="color: #ccc; font-size: 0.9rem;">Plataforma oficial para donaciones y seguimiento de reforestación.</p>
                         <a href="https://www.reddearboles.org/" target="_blank" class="project-link">Ver Sitio Web ↗</a>
                     </div>
                 </article>
 
                 <article class="project-card">
-                    <img src="https://image.thum.io/get/width/1000/crop/800/https://www.elimparcial.com/sonora/" alt="Noticias Sonora" class="project-img">
+                    <img src="assets/img/noticias_sonora.png" alt="Noticias Sonora" class="project-img">
                     <div class="project-content">
                         <span class="category-badge">Sitio de Noticias</span>
                         <h3 style="margin-bottom: 10px;">El Imparcial</h3>
@@ -408,6 +430,49 @@
         // Cerrar menú al dar clic en enlaces
         menuLinks.forEach(link => {
             link.addEventListener('click', toggleMenu);
+        });
+    </script>
+
+    <!-- Particles.js Script -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": ["#ffffff", "#FFD700"] },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": false },
+                "size": { "value": 3, "random": true },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.2,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": { "enable": true, "mode": "grab" },
+                    "onclick": { "enable": true, "mode": "push" },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": { "distance": 200, "line_linked": { "opacity": 0.8 } },
+                    "push": { "particles_nb": 4 }
+                }
+            },
+            "retina_detect": true
         });
     </script>
 </body>

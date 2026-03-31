@@ -4,6 +4,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Intlax.claud - Agencia de desarrollo web y comunicación digital en Tlaxcala. Creamos sitios optimizados, plataformas y aplicaciones.">
+    <meta name="keywords" content="desarrollo web, tlaxcala, diseño web, páginas web, agencia digital, intlax">
     <title>Intlax.claud | De México para el Mundo</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -53,13 +55,56 @@
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
             border-bottom: 2px solid #222;
         }
 
+        .menu-btn {
+            font-size: 1.8rem;
+            color: var(--yellow-accent);
+            cursor: pointer;
+            z-index: 1002;
+            transition: 0.3s;
+        }
+        .menu-btn:hover { color: white; }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100vh;
+            background-color: #0c0c0c;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: 0.4s ease-in-out;
+            z-index: 1001;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.9);
+            border-left: 2px solid var(--yellow-accent);
+        }
+        .nav-menu.active { right: 0; }
+        .nav-menu ul li { margin: 25px 0; text-align: center; }
+        .nav-menu ul li a {
+            font-size: 1.5rem;
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .nav-menu ul li a:hover { color: var(--yellow-accent); }
+        
+        .nav-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 999;
+            opacity: 0; visibility: hidden; transition: 0.3s;
+            backdrop-filter: blur(4px);
+        }
+        .nav-overlay.active { opacity: 1; visibility: visible; }
+
         /* --- HERO SECTION --- */
         .hero {
-            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://via.placeholder.com/1920x1080');
+            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.95)), url('assets/img/hero-bg.png');
             background-size: cover;
             background-position: center;
             color: white;
@@ -142,16 +187,11 @@
 
         .project-card:hover { transform: translateY(-5px); border-color: var(--yellow-accent); }
 
-        /* Simulación de imagen del sitio (placeholder gris) */
         .project-img {
-            height: 200px;
-            background-color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            font-weight: bold;
-            font-size: 1.5rem;
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 2px solid #333;
         }
         
         .project-content { padding: 25px; }
@@ -208,7 +248,19 @@
         <div class="logo-font" style="font-size: 1.5rem;">
             INTLAX<span class="text-yellow">.CLAUD</span>
         </div>
-        <div style="font-size: 1.5rem; color: var(--yellow-accent);">☰</div>
+        <div class="menu-btn" id="menuBtn">☰</div>
+
+        <!-- Navegación Oculta -->
+        <div class="nav-overlay" id="navOverlay"></div>
+        <nav class="nav-menu" id="navMenu">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#proyectos">Portafolio</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="#contacto" class="text-yellow">Contacto</a></li>
+            </ul>
+        </nav>
     </header>
 
     <section class="hero">
@@ -220,7 +272,7 @@
         <a href="#contacto" class="btn-primary">Cotizar Proyecto</a>
     </section>
 
-    <section class="section-white">
+    <section class="section-white" id="servicios">
         <div class="container">
             <h2 class="section-title">NUESTROS SERVICIOS</h2>
             
@@ -241,14 +293,14 @@
         </div>
     </section>
 
-    <section class="portfolio-section">
+    <section class="portfolio-section" id="proyectos">
         <div class="container">
             <h2 class="portfolio-title">PROYECTOS RECIENTES</h2>
             
             <div class="grid-container">
                 
                 <article class="project-card">
-                    <div class="project-img">PATOS VIAJEROS</div> 
+                    <img src="https://image.thum.io/get/width/1000/crop/800/https://patosviajeros.com/" alt="Patos Viajeros" class="project-img"> 
                     <div class="project-content">
                         <span class="category-badge">Negocio Local / Turismo</span>
                         <h3 style="margin-bottom: 10px;">Patos Viajeros</h3>
@@ -258,7 +310,7 @@
                 </article>
 
                 <article class="project-card">
-                    <div class="project-img">Plant a Tree</div>
+                    <img src="https://image.thum.io/get/width/1000/crop/800/https://www.reddearboles.org/" alt="Fundación Red de Árboles" class="project-img">
                     <div class="project-content">
                         <span class="category-badge">Fundación Red de Árboles</span>
                         <h3 style="margin-bottom: 10px;">COMECOT</h3>
@@ -268,7 +320,7 @@
                 </article>
 
                 <article class="project-card">
-                    <div class="project-img">Noticias Sonora</div>
+                    <img src="https://image.thum.io/get/width/1000/crop/800/https://www.elimparcial.com/sonora/" alt="Noticias Sonora" class="project-img">
                     <div class="project-content">
                         <span class="category-badge">Sitio de Noticias</span>
                         <h3 style="margin-bottom: 10px;">El Imparcial</h3>
@@ -302,7 +354,7 @@
                 </ul>
             </div>
             
-            <div class="footer-col">
+            <div class="footer-col" id="contacto">
                 <h4>CONTACTO</h4>
                 <ul>
                     <li>📍 Tlaxcala, México</li>
@@ -336,5 +388,27 @@
             </p>
         </div>
     </footer>
+
+    <script>
+        // Lógica del menú hamburguesa
+        const menuBtn = document.getElementById('menuBtn');
+        const navMenu = document.getElementById('navMenu');
+        const navOverlay = document.getElementById('navOverlay');
+        const menuLinks = navMenu.querySelectorAll('a');
+
+        function toggleMenu() {
+            navMenu.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            menuBtn.innerHTML = navMenu.classList.contains('active') ? '✕' : '☰';
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+        navOverlay.addEventListener('click', toggleMenu);
+        
+        // Cerrar menú al dar clic en enlaces
+        menuLinks.forEach(link => {
+            link.addEventListener('click', toggleMenu);
+        });
+    </script>
 </body>
 </html>

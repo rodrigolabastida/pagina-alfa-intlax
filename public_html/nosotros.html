@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiénes Somos | Intlax.claud</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES --- */
+        :root {
+            --dark-bg: #111111;
+            --light-bg: #FFFFFF;
+            --text-dark: #222222;
+            --yellow-accent: #FFD700;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        /* --- ESTILOS GENERALES --- */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, .logo-font {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0;
+        }
+
+        .text-yellow { color: var(--yellow-accent); }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; padding: 0; }
+
+        /* --- HEADER --- */
+        header {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid #222;
+        }
+
+        /* --- HERO MINI --- */
+        .page-header {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 80px 20px 60px 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--yellow-accent);
+        }
+
+        .page-header h1 { font-size: 3rem; margin-bottom: 10px; }
+        .page-header p { color: #ccc; max-width: 600px; margin: 0 auto; font-size: 1.2rem; letter-spacing: 1px; }
+
+        /* --- CONTENIDO STORYTELLING --- */
+        .about-section {
+            padding: 80px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        @media (min-width: 900px) {
+            .about-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .about-text h2 { font-size: 2.2rem; margin-bottom: 25px; color: var(--dark-bg); border-left: 6px solid var(--yellow-accent); padding-left: 20px; }
+        .about-text p { margin-bottom: 20px; color: #444; font-size: 1.05rem; text-align: justify; }
+
+        /* Caja de Cita / Filosofía */
+        .quote-box {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-left: 4px solid var(--dark-bg);
+            font-style: italic;
+            color: #555;
+            margin-top: 30px;
+        }
+
+        /* --- PERFIL DEL DIRECTOR (SECCIÓN OSCURA) --- */
+        .director-section {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .director-content { max-width: 900px; margin: 0 auto; }
+        .director-content h2 { font-size: 2.5rem; margin-bottom: 10px; }
+        .role-badge { 
+            background-color: var(--yellow-accent); color: var(--dark-bg); 
+            padding: 5px 15px; font-weight: 900; text-transform: uppercase; 
+            display: inline-block; margin-bottom: 30px; border-radius: 4px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: #0a0a0a; color: #ccc;
+            padding: 60px 20px 20px 20px; font-size: 0.95rem;
+            border-top: 3px solid var(--yellow-accent);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; width: 100%; }
+
+        .footer-grid {
+            display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 50px;
+        }
+        @media (min-width: 768px) { .footer-grid { grid-template-columns: 1.5fr 1fr 1fr; } }
+
+        .footer-col h4 {
+            color: var(--yellow-accent); font-family: 'Anton', sans-serif;
+            font-size: 1.3rem; margin-bottom: 25px; letter-spacing: 1px;
+        }
+        .footer-col ul li { margin-bottom: 15px; }
+        .footer-col a:hover { color: var(--yellow-accent); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo-font" style="font-size: 1.5rem;">
+            INTLAX<span class="text-yellow">.CLAUD</span>
+        </a>
+        <div style="font-size: 1.5rem; color: var(--yellow-accent);">☰</div>
+    </header>
+
+    <section class="page-header">
+        <h1>MÁS QUE <span class="text-yellow">CÓDIGO</span></h1>
+        <p>INGENIERÍA Y ESTRATEGIA DIGITAL</p>
+    </section>
+
+    <section class="about-section">
+        <div class="about-grid">
+            <div class="about-text">
+                <h2>LA FUSIÓN: TECNOLOGÍA + MEDIOS</h2>
+                <p>
+                    <strong>Intlax S.A. de C.V.</strong> nace de una premisa simple pero poderosa: una página web no sirve si no comunica. 
+                </p>
+                <p>
+                    A diferencia de las agencias de software tradicionales que solo se enfocan en la programación, nosotros nacimos en el vertiginoso mundo de los <strong>medios digitales</strong>. Gestionar plataformas de noticias con miles de visitas diarias nos enseñó lo que realmente importa: la velocidad, la claridad del mensaje y la capacidad de captar la atención en segundos.
+                </p>
+                <p>
+                    Hoy, aplicamos esa misma ingeniería de alto rendimiento para crear soluciones digitales para empresas, gobiernos y marcas personales en Tlaxcala y todo México.
+                </p>
+            </div>
+            
+            <div style="background-color: #eee; height: 350px; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+                <span style="color: #aaa; font-weight: bold; font-family: 'Anton'; font-size: 2rem;">IMAGEN CORPORATIVA</span>
+            </div>
+        </div>
+
+        <div class="quote-box">
+            "No vendemos plantillas. Vendemos herramientas digitales diseñadas para convertir visitantes en clientes y lectores en seguidores."
+        </div>
+    </section>
+
+    <section class="director-section">
+        <div class="director-content">
+            <h2 class="text-yellow">RODRIGO LABASTIDA</h2>
+            <span class="role-badge">Director General & Fundador</span>
+            
+            <p style="font-size: 1.1rem; max-width: 700px; margin: 0 auto; color: #ddd;">
+                Ingeniero y especialista en medios digitales. Con una trayectoria que combina la docencia en ciencias exactas y la dirección de comunicación gubernamental, Rodrigo lidera Intlax S.A. de C.V. con una visión clara: <strong>digitalizar la región con estándares de calidad global.</strong>
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-grid">
+            
+            <div class="footer-col">
+                <a href="index.html" style="text-decoration: none;">
+                    <span style="font-family:'Montserrat'; font-weight:900; font-size:1.6rem; color:white; display:block; margin-bottom:15px; letter-spacing: -1px;">
+                        <span class="text-yellow">IN</span>TLAX.CLAUD
+                    </span>
+                </a>
+                <p>Agencia de desarrollo web y comunicación digital. Transformamos ideas en tecnología funcional desde Tlaxcala.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>LEGAL</h4>
+                <ul>
+                    <li><a href="nosotros.html">Quiénes Somos</a></li>
+                    <li><a href="calidad.html">Política de Calidad</a></li>
+                    <li><a href="privacidad.html">Política de Privacidad</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>CONTACTO</h4>
+                <ul>
+                    <li>📍 Tlaxcala, México</li>
+                    <li>📞 <a href="tel:+527491105378">749 110 5378</a></li>
+                    <li>✉️ contacto@intlax.claud</li>
+                </ul>
+
+                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                    <a href="https://www.facebook.com/intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="https://twitter.com/intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://wa.me/527491105378" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; border-top: 1px solid #222; padding-top: 30px;" class="container">
+            <p style="font-size: 0.9rem; color: #777;">
+                &copy; 2026 Intlax.claud. Desarrollado en Mexico.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

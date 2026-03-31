@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Calidad | Intlax.claud</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES --- */
+        :root {
+            --dark-bg: #111111;
+            --light-bg: #FFFFFF;
+            --text-dark: #222222;
+            --yellow-accent: #FFD700;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        /* --- ESTILOS GENERALES --- */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        h1, h2, h3, h4, .logo-font {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0;
+        }
+
+        .text-yellow { color: var(--yellow-accent); }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; padding: 0; }
+
+        /* --- HEADER --- */
+        header {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid #222;
+        }
+
+        /* --- HERO MINI --- */
+        .page-header {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 80px 20px 60px 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--yellow-accent);
+        }
+
+        .page-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .page-header p { color: #ccc; max-width: 600px; margin: 0 auto; font-size: 1.1rem; }
+
+        /* --- CONTENIDO POLÍTICA --- */
+        .policy-content {
+            padding: 60px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            margin-bottom: 50px;
+            text-align: center;
+            color: #444;
+        }
+
+        /* Grid de Pilares */
+        .quality-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .quality-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-soft);
+            border-left: 5px solid var(--yellow-accent);
+        }
+
+        .quality-card h3 { font-size: 1.4rem; margin-bottom: 15px; color: var(--dark-bg); }
+        .quality-card p { font-size: 0.95rem; color: #666; }
+
+        /* Sección Final */
+        .commitment-box {
+            background-color: #f4f4f4;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 40px;
+            border: 1px solid #ddd;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: #0a0a0a; color: #ccc;
+            padding: 60px 20px 20px 20px; font-size: 0.95rem;
+            border-top: 3px solid var(--yellow-accent);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; width: 100%; }
+
+        .footer-grid {
+            display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 50px;
+        }
+        @media (min-width: 768px) { .footer-grid { grid-template-columns: 1.5fr 1fr 1fr; } }
+
+        .footer-col h4 {
+            color: var(--yellow-accent); font-family: 'Anton', sans-serif;
+            font-size: 1.3rem; margin-bottom: 25px; letter-spacing: 1px;
+        }
+        .footer-col ul li { margin-bottom: 15px; }
+        .footer-col a:hover { color: var(--yellow-accent); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo-font" style="font-size: 1.5rem;">
+            INTLAX<span class="text-yellow">.CLAUD</span>
+        </a>
+        <div style="font-size: 1.5rem; color: var(--yellow-accent);">☰</div>
+    </header>
+
+    <section class="page-header">
+        <h1>POLÍTICA DE <span class="text-yellow">CALIDAD</span></h1>
+        <p>Compromiso técnico y ético en cada línea de código.</p>
+    </section>
+
+    <section class="policy-content">
+        
+        <div class="intro-text">
+            <p>
+                En <strong>Intlax.claud</strong>, entendemos que un sitio web no es solo una tarjeta de presentación digital; es el motor de ventas y comunicación de nuestros clientes. Por ello, aplicamos la misma rigurosidad de ingeniería que usamos en nuestros proyectos de medios digitales a cada desarrollo web.
+            </p>
+        </div>
+
+        <h2 style="text-align: center; margin-bottom: 30px; font-size: 2rem;">NUESTROS 4 PILARES</h2>
+
+        <div class="quality-grid">
+            <article class="quality-card">
+                <h3>01. MOBILE FIRST (MÓVIL PRIMERO)</h3>
+                <p>No adaptamos sitios de escritorio a móviles; <strong>diseñamos para móviles primero</strong>. Garantizamos que el 100% de la navegación, botones y textos sean perfectamente funcionales en smartphones, donde reside el 80% del tráfico actual.</p>
+            </article>
+
+            <article class="quality-card">
+                <h3>02. VELOCIDAD Y OPTIMIZACIÓN</h3>
+                <p>Respetamos las métricas <em>Core Web Vitals</em> de Google. Entregamos código limpio y optimizado para asegurar tiempos de carga rápidos, evitando que tus clientes abandonen el sitio por lentitud.</p>
+            </article>
+
+            <article class="quality-card">
+                <h3>03. SEGURIDAD INTEGRAL</h3>
+                <p>La seguridad no es opcional. Todos nuestros desarrollos incluyen implementación de certificados SSL (candado de seguridad) y prácticas de protección contra ataques básicos para salvaguardar la integridad de la información de nuestros clientes.</p>
+            </article>
+
+            <article class="quality-card">
+                <h3>04. SOPORTE PROFESIONAL</h3>
+                <p>Creemos en el trato directo. Detrás de cada ticket de soporte está el equipo profesional de <strong>Intlax S.A. de C.V.</strong> en Tlaxcala, ofreciendo soluciones técnicas sin respuestas automatizadas genéricas.</p>
+            </article>
+        </div>
+
+        <div class="commitment-box">
+            <h3 class="logo-font">GARANTÍA DE SATISFACCIÓN</h3>
+            <p>
+                Cada proyecto pasa por una revisión manual exhaustiva antes de ser publicado. Si el producto final no cumple con los estándares técnicos acordados, trabajaremos en las correcciones necesarias sin costo adicional hasta garantizar la funcionalidad óptima.
+            </p>
+            <p style="margin-top: 25px; font-weight: 900; font-size: 1.1rem; color: #111;">
+                — INTAX S.A. DE C.V.
+            </p>
+        </div>
+
+    </section>
+
+    <footer>
+        <div class="container footer-grid">
+            
+            <div class="footer-col">
+                <a href="index.html" style="text-decoration: none;">
+                    <span style="font-family:'Montserrat'; font-weight:900; font-size:1.6rem; color:white; display:block; margin-bottom:15px; letter-spacing: -1px;">
+                        <span class="text-yellow">IN</span>TLAX.CLAUD
+                    </span>
+                </a>
+                <p>Agencia de desarrollo web y comunicación digital. Transformamos ideas en tecnología funcional desde Tlaxcala.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>LEGAL</h4>
+                <ul>
+                    <li><a href="nosotros.html">Quiénes Somos</a></li>
+                    <li><a href="calidad.html">Política de Calidad</a></li>
+                    <li><a href="privacidad.html">Política de Privacidad</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>CONTACTO</h4>
+                <ul>
+                    <li>📍 Tlaxcala, México</li>
+                    <li>📞 <a href="tel:+527491105378">749 110 5378</a></li>
+                    <li>✉️ contacto@intlax.claud</li>
+                </ul>
+
+                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                    <a href="https://www.facebook.com/intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="https://twitter.com/intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://wa.me/527491105378" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; border-top: 1px solid #222; padding-top: 30px;" class="container">
+            <p style="font-size: 0.9rem; color: #777;">
+                &copy; 2026 Intlax.claud. Desarrollado en Mexico.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

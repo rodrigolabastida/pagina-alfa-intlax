@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="robots" content="noindex, nofollow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotizador Inteligente | Intlax.claud</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@300;400;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- ESTILOS GENERALES WEB (MODO OSCURO) --- */
+        :root {
+            --primary-yellow: #FFD700;
+            --dark-bg: #121212;
+            --card-bg: #1E1E1E;
+            --text-light: #F0F0F0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .highlight {
+            color: var(--primary-yellow);
+        }
+
+        /* Header */
+        header {
+            background-color: black;
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-yellow);
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--primary-yellow);
+            padding-left: 15px;
+            color: white;
+        }
+
+        /* --- CARDS & GRID --- */
+        .edu-grid,
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .edu-card,
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+
+        .card {
+            padding: 1.5rem;
+        }
+
+        /* Ajuste para cards de precios */
+
+        .edu-icon {
+            font-size: 3rem;
+            color: var(--primary-yellow);
+            margin-bottom: 15px;
+            text-align: center;
+            display: block;
+        }
+
+        .edu-card h3,
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--primary-yellow);
+        }
+
+        .edu-card p,
+        .card p {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .price-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+            font-size: 0.9rem;
+        }
+
+        .price-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .price-tag-small {
+            font-weight: bold;
+            color: var(--primary-yellow);
+        }
+
+        /* --- CALCULADORA --- */
+        #calculator {
+            background-color: #1a1a1a;
+            border: 2px solid var(--primary-yellow);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .calc-row {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            background-color: #000;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 6px;
+            font-family: 'Montserrat';
+            font-size: 1rem;
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            border-top: 1px dashed #555;
+            padding-top: 20px;
+        }
+
+        .result-box {
+            background-color: black;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .result-box.highlight-box {
+            border: 1px solid var(--primary-yellow);
+            background: linear-gradient(180deg, #101010 0%, #1a1a1a 100%);
+        }
+
+        .result-title {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .big-price {
+            font-family: 'Anton';
+            font-size: 2.5rem;
+            color: white;
+            display: block;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .monthly-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #222;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .monthly-row:hover {
+            border-color: #555;
+        }
+
+        .monthly-detail {
+            font-size: 0.7rem;
+            color: #777;
+            display: block;
+            font-weight: normal;
+        }
+
+        .final-form {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 40px;
+            text-align: center;
+            border-top: 4px solid var(--primary-yellow);
+        }
+
+        .input-full {
+            width: 100%;
+            padding: 15px;
+            background: #000;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 6px;
+            font-family: 'Montserrat';
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .btn-generate {
+            background-color: var(--primary-yellow);
+            color: #000;
+            width: 100%;
+            padding: 20px;
+            border: none;
+            font-family: 'Anton';
+            font-size: 1.3rem;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 6px;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            transition: 0.3s;
+        }
+
+        .btn-generate:hover {
+            transform: scale(1.02);
+            background-color: #e6c200;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        /* --- ESTILOS DE LA VISTA PREVIA (OVERLAY) --- */
+        #pdf-overlay {
+            display: none;
+            /* Oculto por defecto */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            /* Fondo muy oscuro */
+            z-index: 10000;
+            overflow-y: scroll;
+            padding: 40px 10px;
+            text-align: center;
+        }
+
+        /* Botones de acción flotantes */
+        .action-bar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            display: flex;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid #333;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Montserrat';
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-close {
+            background: #ff4444;
+            color: white;
+        }
+
+        .btn-print {
+            background: #4CAF50;
+            color: white;
+        }
+
+        /* HOJA DE PAPEL (LO QUE SE IMPRIME) */
+        .pdf-paper {
+            background: white;
+            width: 800px;
+            max-width: 100%;
+            min-height: 1050px;
+            margin: 60px auto;
+            padding: 50px;
+            text-align: left;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            color: black;
+        }
+
+        /* --- ESTILOS INTERNOS DEL CONTRATO PARA IMPRESIÓN --- */
+        .pdf-paper * {
+            color: #000 !important;
+        }
+
+        /* Forzar negro */
+        .pdf-header {
+            border-bottom: 4px solid #FFD700 !important;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .pdf-logo {
+            font-family: 'Anton';
+            font-size: 2rem;
+        }
+
+        .pdf-logo span {
+            color: #d4b000 !important;
+        }
+
+        /* Amarillo oscuro para contraste en papel */
+        .pdf-client-box {
+            background: #f4f4f4 !important;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .pdf-table th {
+            background: #000 !important;
+            color: white !important;
+            padding: 8px;
+            text-align: left;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .pdf-table td {
+            border-bottom: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .pdf-legal {
+            font-size: 0.75rem;
+            text-align: justify;
+            color: #444;
+            margin-top: 30px;
+            border-top: 2px solid #000;
+            padding-top: 15px;
+        }
+
+        /* --- CSS MÁGICO PARA IMPRESIÓN NATIVA --- */
+        @media print {
+
+            body>header,
+            body>.container,
+            body>footer {
+                display: none;
+            }
+
+            /* Oculta la web */
+            #pdf-overlay {
+                display: block !important;
+                position: relative;
+                background: none;
+                padding: 0;
+                overflow: visible;
+            }
+
+            .action-bar {
+                display: none !important;
+            }
+
+            /* Oculta botones */
+            .pdf-paper {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                max-width: none;
+                border: none;
+                padding: 0;
+            }
+        }
+
+        /* --- ESTILOS FALTANTES DEL FOOTER (AGREGADOS) --- */
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: left;
+            /* Alineamos contenido a la izquierda en columnas */
+            padding-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            border-left: 3px solid var(--primary-yellow);
+            padding-left: 10px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--primary-yellow);
+            padding-left: 5px;
+        }
+
+        /* Clase de utilidad para color amarillo */
+        .text-yellow {
+            color: var(--primary-yellow);
+        }
+
+        /* Ajuste para móviles: centrar todo si la pantalla es pequeña */
+        @media (max-width: 768px) {
+            .footer-grid {
+                text-align: center;
+            }
+
+            .footer-col h4 {
+                border-left: none;
+                border-bottom: 3px solid var(--primary-yellow);
+                display: inline-block;
+                padding-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" style="text-decoration:none; color:white;">
+            <h1>INTLAX<span class="highlight">.CLOUD</span></h1>
+        </a>
+        <p>Calculadora de Inversión Digital</p>
+    </header>
+
+    <div class="container">
+
+        <section>
+            <h2 class="section-title">1. ENTENDIENDO TU INVERSIÓN</h2>
+            <div class="edu-grid">
+                <div class="edu-card">
+                    <span class="edu-icon"><i class="fas fa-laptop-code"></i></span>
+                    <h3>EL DESARROLLO</h3>
+                    <p>Es la construcción de la página. El diseño y el código.</p>
+                </div>
+                <div class="edu-card">
+                    <span class="edu-icon"><i class="fas fa-globe"></i></span>
+                    <h3>EL DOMINIO</h3>
+                    <p>Es tu dirección en internet (ej. .com, .mx).</p>
+                </div>
+                <div class="edu-card">
+                    <span class="edu-icon"><i class="fas fa-server"></i></span>
+                    <h3>EL HOSTING</h3>
+                    <p>La renta del terreno digital donde vive tu sitio.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">2. PAQUETES DE DESARROLLO</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Sistema de Noticias (Básico)</h3>
+                    <p>Sitio web funcional para noticias, app móvil para redacción y diseño responsive.</p>
+                    <p class="price-tag-small" style="font-size: 1.8rem; margin-top:10px;">$4,500 MXN</p>
+                </div>
+                <div class="card" style="border-color: var(--primary-yellow);">
+                    <h3>Portal Profesional (Completo)</h3>
+                    <p>Incluye secciones legales, SEO avanzado, directorio, "Nosotros" y aprobación para Google News.
+                    </p>
+                    <p class="price-tag-small" style="font-size: 1.8rem; margin-top:10px;">$7,800 MXN</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">3. COSTOS RECURRENTES</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Dominio (Anual)</h3>
+                    <div class="price-list-item"><span>.com.mx</span><span class="price-tag-small">$250/año</span></div>
+                    <div class="price-list-item"><span>.mx</span><span class="price-tag-small">$750/año</span></div>
+                    <div class="price-list-item"><span>.com</span><span class="price-tag-small">$100/año</span></div>
+                    <div class="price-list-item"><span>Propio</span><span class="price-tag-small">$0 (Tuyo)</span></div>
+                </div>
+                <div class="card">
+                    <h3>Hosting (Mensual)</h3>
+                    <div class="price-list-item"><span>Intlax.cloud</span><span class="price-tag-small">$180/mes</span>
+                    </div>
+                    <div class="price-list-item"><span>Propio</span><span class="price-tag-small">$0 (Tuyo)</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">4. CALCULADORA DE INVERSIÓN</h2>
+            <div id="calculator">
+                <div class="calc-row">
+                    <label>A. Paquete:</label>
+                    <select id="packageSelect" onchange="calculate()">
+                        <option value="4500">Sistema de Noticias Básico ($4,500)</option>
+                        <option value="7800">Portal Profesional Completo ($7,800)</option>
+                    </select>
+                </div>
+                <div class="calc-row">
+                    <label>B. Hosting:</label>
+                    <select id="hostingSelect" onchange="calculate()">
+                        <option value="180">Hosting Intlax.cloud ($180/mes)</option>
+                        <option value="160">Hosting Externo Gestionado ($160/mes)</option>
+                        <option value="0">Tengo mi propio Hosting ($0/mes)</option>
+                    </select>
+                </div>
+                <div class="calc-row">
+                    <label>C. Dominio:</label>
+                    <select id="domainSelect" onchange="calculate()">
+                        <option value="250">.com.mx ($250)</option>
+                        <option value="750">.mx ($750)</option>
+                        <option value="100">.com ($100)</option>
+                        <option value="0">Tengo mi propio Dominio ($0)</option>
+                    </select>
+                </div>
+
+                <div class="results-container">
+                    <div class="result-box highlight-box">
+                        <span class="result-title">PAGO PARA INICIAR:</span>
+                        <span class="big-price" id="initialTotal">$0 MXN</span>
+                    </div>
+                    <div class="result-box">
+                        <span class="result-title">PLANES DE FINANCIAMIENTO:</span>
+                        <div class="monthly-options">
+                            <div class="monthly-row" onclick="selectPlan(0)">
+                                <input type="radio" name="plan" id="radio0">
+                                <div style="margin-left:10px;"><span>Pago de Contado (Liquidación)</span></div>
+                                <span class="highlight" id="month0" style="font-size:1.2rem">$0</span>
+                            </div>
+                            <div class="monthly-row" onclick="selectPlan(6)">
+                                <input type="radio" name="plan" id="radio6" checked>
+                                <div style="margin-left:10px;"><span>Plan 6 Meses</span></div>
+                                <span class="highlight" id="month6" style="font-size:1.2rem">$0</span>
+                            </div>
+                            <div class="monthly-row" onclick="selectPlan(12)">
+                                <input type="radio" name="plan" id="radio12">
+                                <div style="margin-left:10px;"><span>Plan 12 Meses</span></div>
+                                <span class="highlight" id="month12" style="font-size:1.2rem">$0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="final-form">
+                    <h3 style="color: white; margin-bottom: 10px;">GENERAR COTIZACIÓN</h3>
+                    <p style="color: #ccc; margin-bottom: 20px;">Ingresa tus datos para ver y guardar la propuesta
+                        formal.</p>
+                    <input type="text" id="clientName" class="input-full" placeholder="Nombre Completo o Empresa">
+                    <input type="text" id="contractDate" value="22/01/2026" style="display:none;">
+
+                    <button class="btn-generate" onclick="openPreview()">
+                        <i class="fas fa-file-contract"></i> VER Y DESCARGAR
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <div class="container footer-grid">
+
+            <div class="footer-col">
+                <a href="index.html" style="text-decoration: none;">
+                    <span
+                        style="font-family:'Montserrat'; font-weight:900; font-size:1.6rem; color:white; display:block; margin-bottom:15px; letter-spacing: -1px;">
+                        <span class="text-yellow">IN</span>TLAX.CLAUD
+                    </span>
+                </a>
+                <p>Agencia de desarrollo web y comunicación digital. Transformamos ideas en tecnología funcional desde
+                    Tlaxcala.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>LEGAL</h4>
+                <ul>
+                    <li><a href="../nosotros.html">Quiénes Somos</a></li>
+                    <li><a href="../calidad.html">Política de Calidad</a></li>
+                    <li><a href="../privacidad.html">Política de Privacidad</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>CONTACTO</h4>
+                <ul>
+                    <li>📍 Tlaxcala, México</li>
+                    <li>📞 <a href="tel:+527491105378">749 110 5378</a></li>
+                    <li>✉️ contacto@intlax.claud</li>
+                </ul>
+
+                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                    <a href="https://www.facebook.com/intlax" target="_blank"
+                        style="font-size: 1.2rem; color: white; transition: 0.3s;"
+                        onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/intlax" target="_blank"
+                        style="font-size: 1.2rem; color: white; transition: 0.3s;"
+                        onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@intlax" target="_blank"
+                        style="font-size: 1.2rem; color: white; transition: 0.3s;"
+                        onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="https://twitter.com/intlax" target="_blank"
+                        style="font-size: 1.2rem; color: white; transition: 0.3s;"
+                        onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://wa.me/527491105378" target="_blank"
+                        style="font-size: 1.2rem; color: white; transition: 0.3s;"
+                        onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; border-top: 1px solid #222; padding-top: 30px;" class="container">
+            <p style="font-size: 0.9rem; color: #777;">
+                &copy; 2026 Intlax.claud. Desarrollado en Mexico.
+            </p>
+        </div>
+    </footer>
+
+    <div id="pdf-overlay">
+        <div class="action-bar">
+            <button class="action-btn btn-close" onclick="closePreview()"><i class="fas fa-times"></i> CERRAR</button>
+            <button class="action-btn btn-print" onclick="window.print()"><i class="fas fa-print"></i> IMPRIMIR /
+                GUARDAR PDF</button>
+        </div>
+
+        <div class="pdf-paper">
+            <div class="pdf-header">
+                <div class="pdf-logo">IN<span>TLAX</span>.CLAUD</div>
+                <div style="text-align: right;"><strong>PROPUESTA DE SERVICIOS</strong><br><span
+                        id="pdfDateDisplay"></span></div>
+            </div>
+
+            <div class="pdf-client-box">
+                <strong>ATENCIÓN A:</strong> <span id="pdfClientName"
+                    style="font-size:1.1rem; text-transform: uppercase;">---</span><br>
+                <strong>PROYECTO:</strong> Desarrollo de Plataforma de Noticias & Medios
+            </div>
+
+            <p style="font-weight:900; font-size:1.1rem; margin-bottom:10px;">DETALLE DE LA INVERSIÓN</p>
+
+            <table class="pdf-table">
+                <thead>
+                    <tr>
+                        <th>CONCEPTO</th>
+                        <th style="text-align: right;">IMPORTE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>PAGO INICIAL (APERTURA)</strong><br><small>Incluye: Configuración, Dominio (<span
+                                    id="pdfDomainName"></span>) y 1er Mes de Hosting (si aplica).</small></td>
+                        <td style="text-align: right; font-weight: bold;" id="pdfInitialTotal">$0.00</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td><strong>ESQUEMA DE FINANCIAMIENTO</strong><br><small>Mensualidad fija (Desarrollo + Hosting)
+                                durante el plazo.</small></td>
+                        <td style="text-align: right; font-weight: bold;" id="pdfMonthlyTotal">$0.00 / mes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PLAZO DEL CONTRATO</strong></td>
+                        <td style="text-align: right;" id="pdfPlanMonths">--</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pdf-legal">
+                <h4 style="text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 5px;">TÉRMINOS Y
+                    CONDICIONES</h4>
+                <p><strong>1. TIEMPOS DE ENTREGA:</strong> Primera propuesta visual en <strong>1 semana hábil</strong>
+                    (tras recibir info). Terminación aproximada en <strong>3 semanas adicionales</strong> tras
+                    aprobación.</p><br>
+                <p><strong>2. HOSTING (BAJA):</strong> En caso de usar hosting de Intlax, la falta de pago tiene un
+                    periodo de gracia de <strong>28 días</strong>. Si el cliente usa hosting propio, Intlax no se hace
+                    responsable por caídas del servidor.</p><br>
+                <p><strong>3. DOMINIO (PÉRDIDA):</strong> Si el dominio es administrado por Intlax, la falta de renovación implica riesgo de pérdida. Si el dominio es del cliente, la renovación es responsabilidad exclusiva del cliente.</p><br>
+                <p><strong>4. ACEPTACIÓN:</strong> El pago del anticipo constituye la aceptación de estos términos.</p>
+            </div>
+
+            <div style="margin-top: 50px; display: flex; justify-content: space-between; text-align: center;">
+                <div style="border-top: 1px solid #000; width: 40%; padding-top: 10px;"><strong>INTLAX S.A. DE
+                        C.V.</strong><br>PROVEEDOR</div>
+                <div style="border-top: 1px solid #000; width: 40%; padding-top: 10px;"><strong>FIRMA DE
+                        CONFORMIDAD</strong><br>CLIENTE</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let g_initialPayment = 0; let g_monthly6 = 0; let g_monthly12 = 0; let g_remainder = 0; let g_domainName = "";
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date();
+            document.getElementById('contractDate').value = today.toLocaleDateString('es-MX');
+            calculate();
+        });
+
+        function calculate() {
+            const packagePrice = parseInt(document.getElementById('packageSelect').value);
+            const hostingPrice = parseInt(document.getElementById('hostingSelect').value);
+            const domainPrice = parseInt(document.getElementById('domainSelect').value);
+            const domainSelect = document.getElementById('domainSelect');
+            
+            // Lógica para nombre del dominio: Si el precio es 0, es propio
+            if(domainPrice === 0) {
+                g_domainName = "Dominio Propio (Cliente)";
+            } else {
+                g_domainName = domainSelect.options[domainSelect.selectedIndex].text.split('(')[0];
+            }
+
+            const downPayment = 1000;
+            
+            // Pago inicial es anticipo + costo dominio + costo hosting (si es que no son 0)
+            g_initialPayment = downPayment + domainPrice + hostingPrice;
+            
+            const remainingBalance = packagePrice - downPayment;
+
+            g_remainder = remainingBalance;
+            // Las mensualidades suman el hosting (que será 0 si el cliente tiene el suyo)
+            g_monthly6 = (remainingBalance / 6) + hostingPrice;
+            g_monthly12 = (remainingBalance / 12) + hostingPrice;
+
+            const fmt = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 });
+            document.getElementById('initialTotal').innerText = fmt.format(g_initialPayment) + " MXN";
+            document.getElementById('month6').innerText = fmt.format(g_monthly6);
+            document.getElementById('month12').innerText = fmt.format(g_monthly12);
+            document.getElementById('month0').innerText = fmt.format(g_remainder);
+        }
+
+        function selectPlan(months) { document.getElementById('radio' + months).checked = true; }
+
+        function openPreview() {
+            const name = document.getElementById('clientName').value;
+            if (!name) { alert("Por favor escribe el nombre para continuar."); return; }
+
+            const isPlan6 = document.getElementById('radio6').checked;
+            const isPlan0 = document.getElementById('radio0').checked;
+
+            const fmt = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 2 });
+            let selectedAmountText = "";
+            let selectedMonthsText = "";
+
+            if (isPlan0) {
+                selectedAmountText = fmt.format(g_remainder) + " (Liquidación Única)";
+                selectedMonthsText = "Pago de Contado (Inmediato)";
+            } else {
+                const selectedMonthly = isPlan6 ? g_monthly6 : g_monthly12;
+                selectedAmountText = fmt.format(selectedMonthly) + " / mes";
+                selectedMonthsText = isPlan6 ? "6 Meses" : "12 Meses";
+            }
+
+            document.getElementById('pdfClientName').innerText = name;
+            document.getElementById('pdfDateDisplay').innerText = document.getElementById('contractDate').value;
+            document.getElementById('pdfDomainName').innerText = g_domainName;
+            document.getElementById('pdfInitialTotal').innerText = fmt.format(g_initialPayment);
+            document.getElementById('pdfMonthlyTotal').innerText = selectedAmountText;
+            document.getElementById('pdfPlanMonths').innerText = selectedMonthsText;
+
+            document.getElementById('pdf-overlay').style.display = 'block';
+        }
+
+        function closePreview() { document.getElementById('pdf-overlay').style.display = 'none'; }
+    </script>
+</body>
+
+</html>

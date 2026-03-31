@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intlax.claud | De México para el Mundo</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- VARIABLES --- */
+        :root {
+            --dark-bg: #111111;
+            --light-bg: #FFFFFF;
+            --text-dark: #222222;
+            --text-light: #F4F4F4;
+            --yellow-accent: #FFD700;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.08);
+            --shadow-dark: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* --- ESTILOS GENERALES --- */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, .logo-font {
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0;
+        }
+
+        .text-yellow { color: var(--yellow-accent); }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; padding: 0; }
+
+        /* --- HEADER --- */
+        header {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid #222;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)), url('https://via.placeholder.com/1920x1080');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 90px 20px;
+            text-align: center;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 { font-size: 3.2rem; line-height: 1.1; margin-bottom: 20px; }
+        
+        .hero-subtitle {
+            font-size: 1.2rem; font-weight: 300; color: #ccc; margin-bottom: 30px;
+            text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        .btn-primary {
+            background-color: var(--yellow-accent);
+            color: var(--dark-bg);
+            padding: 15px 35px;
+            font-weight: 900;
+            font-family: 'Montserrat', sans-serif;
+            border-radius: 4px;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            display: inline-block;
+        }
+        .btn-primary:hover { background-color: #e6c200; transform: translateY(-2px); }
+
+        /* --- SECCIÓN BLANCA (SERVICIOS) --- */
+        .section-white { background-color: var(--light-bg); padding: 70px 20px; text-align: center; }
+        
+        .section-title { font-size: 2.5rem; color: var(--dark-bg); margin-bottom: 50px; }
+        .section-title::after {
+            content: ''; display: block; width: 60px; height: 4px;
+            background-color: var(--yellow-accent); margin: 10px auto 0;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: white; padding: 40px 30px; border-radius: 12px;
+            box-shadow: var(--shadow-soft); border: 1px solid #eee; text-align: left; transition: 0.3s;
+        }
+        .service-card:hover { border-bottom: 4px solid var(--yellow-accent); transform: translateY(-5px); }
+        .service-card h3 { color: var(--dark-bg); font-size: 1.6rem; margin-bottom: 15px; }
+
+        /* --- NUEVA SECCIÓN: PORTAFOLIO (OSCURA) --- */
+        .portfolio-section {
+            background-color: var(--dark-bg);
+            padding: 80px 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .portfolio-title { font-size: 2.5rem; color: white; margin-bottom: 50px; }
+        .portfolio-title::after {
+            content: ''; display: block; width: 60px; height: 4px;
+            background-color: var(--yellow-accent); margin: 10px auto 0;
+        }
+
+        .project-card {
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow-dark);
+            text-align: left;
+            transition: 0.3s;
+            border: 1px solid #333;
+        }
+
+        .project-card:hover { transform: translateY(-5px); border-color: var(--yellow-accent); }
+
+        /* Simulación de imagen del sitio (placeholder gris) */
+        .project-img {
+            height: 200px;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .project-content { padding: 25px; }
+        
+        .category-badge {
+            background-color: var(--yellow-accent);
+            color: var(--dark-bg);
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .project-link {
+            color: var(--yellow-accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            display: inline-block;
+            border-bottom: 1px solid transparent;
+        }
+        .project-link:hover { border-bottom: 1px solid var(--yellow-accent); }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: #0a0a0a; color: #ccc;
+            padding: 60px 20px 20px 20px; font-size: 0.95rem;
+            border-top: 3px solid var(--yellow-accent);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; width: 100%; }
+
+        .footer-grid {
+            display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 50px;
+        }
+        @media (min-width: 768px) { .footer-grid { grid-template-columns: 1.5fr 1fr 1fr; } }
+
+        .footer-col h4 {
+            color: var(--yellow-accent); font-family: 'Anton', sans-serif;
+            font-size: 1.3rem; margin-bottom: 25px; letter-spacing: 1px;
+        }
+        .footer-col ul li { margin-bottom: 15px; }
+        .footer-col a:hover { color: var(--yellow-accent); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-font" style="font-size: 1.5rem;">
+            INTLAX<span class="text-yellow">.CLAUD</span>
+        </div>
+        <div style="font-size: 1.5rem; color: var(--yellow-accent);">☰</div>
+    </header>
+
+    <section class="hero">
+        <h1>TU NEGOCIO, <br><span class="text-yellow">NIVEL EXPERTO</span></h1>
+        <p class="hero-subtitle">DE MÉXICO PARA EL MUNDO</p> 
+        <p style="max-width: 600px; margin-bottom: 30px;">
+            Ingeniería web y comunicación estratégica desde Calpulalpan.
+        </p>
+        <a href="#contacto" class="btn-primary">Cotizar Proyecto</a>
+    </section>
+
+    <section class="section-white">
+        <div class="container">
+            <h2 class="section-title">NUESTROS SERVICIOS</h2>
+            
+            <div class="grid-container">
+                <article class="service-card">
+                    <h3>01. WEB LOCAL</h3>
+                    <p>Sitios optimizados para negocios. Aparece en Google Maps, carga rápido en celular y vende por WhatsApp.</p>
+                </article>
+                <article class="service-card">
+                    <h3>02. MEDIOS DIGITALES</h3>
+                    <p>Plataformas para noticias tipo revista. Estructura probada en Intlax para manejar alto tráfico.</p>
+                </article>
+                <article class="service-card">
+                    <h3>03. DESARROLLO A MEDIDA</h3>
+                    <p>Directorios, catálogos y aplicaciones web complejas con paneles de administración intuitivos.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio-section">
+        <div class="container">
+            <h2 class="portfolio-title">PROYECTOS RECIENTES</h2>
+            
+            <div class="grid-container">
+                
+                <article class="project-card">
+                    <div class="project-img">PATOS VIAJEROS</div> 
+                    <div class="project-content">
+                        <span class="category-badge">Negocio Local / Turismo</span>
+                        <h3 style="margin-bottom: 10px;">Patos Viajeros</h3>
+                        <p style="color: #ccc; font-size: 0.9rem;">Operadora turística con catálogo de experiencias y contacto directo.</p>
+                        <a href="https://patosviajeros.com/" target="_blank" class="project-link">Ver Sitio Web ↗</a>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-img">Plant a Tree</div>
+                    <div class="project-content">
+                        <span class="category-badge">Fundación Red de Árboles</span>
+                        <h3 style="margin-bottom: 10px;">COMECOT</h3>
+                        <p style="color: #ccc; font-size: 0.9rem;">Plataforma oficial de una Fundación Red de Árboles.</p>
+                        <a href="https://www.reddearboles.org/" target="_blank" class="project-link">Ver Sitio Web ↗</a>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-img">Noticias Sonora</div>
+                    <div class="project-content">
+                        <span class="category-badge">Sitio de Noticias</span>
+                        <h3 style="margin-bottom: 10px;">El Imparcial</h3>
+                        <p style="color: #ccc; font-size: 0.9rem;">Portal de noticias optimizado para lectura rápida y redes sociales.</p>
+                        <a href="https://www.elimparcial.com/sonora/" target="_blank" class="project-link">Ver Sitio Web ↗</a>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-grid">
+            
+            <div class="footer-col">
+                <a href="index.html" style="text-decoration: none;">
+                    <span style="font-family:'Montserrat'; font-weight:900; font-size:1.6rem; color:white; display:block; margin-bottom:15px; letter-spacing: -1px;">
+                        <span class="text-yellow">IN</span>TLAX.CLAUD
+                    </span>
+                </a>
+                <p>Agencia de desarrollo web y comunicación digital. Transformamos ideas en tecnología funcional desde Tlaxcala.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>LEGAL</h4>
+                <ul>
+                    <li><a href="nosotros.html">Quiénes Somos</a></li>
+                    <li><a href="calidad.html">Política de Calidad</a></li>
+                    <li><a href="privacidad.html">Política de Privacidad</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>CONTACTO</h4>
+                <ul>
+                    <li>📍 Tlaxcala, México</li>
+                    <li>📞 <a href="tel:+527491105378">749 110 5378</a></li>
+                    <li>✉️ contacto@intlax.claud</li>
+                </ul>
+
+                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                    <a href="https://www.facebook.com/intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                    <a href="https://twitter.com/intlax" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-x-twitter"></i>
+                    </a>
+                    <a href="https://wa.me/527491105378" target="_blank" style="font-size: 1.2rem; color: white; transition: 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='white'">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; border-top: 1px solid #222; padding-top: 30px;" class="container">
+            <p style="font-size: 0.9rem; color: #777;">
+                &copy; 2026 Intlax.claud. Desarrollado en Mexico.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

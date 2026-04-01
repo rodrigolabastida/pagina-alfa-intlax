@@ -785,7 +785,7 @@ def process_folder_and_generate_report(folder_path, folder_name, base_dir):
         total_interacciones=format_number(sum_interacciones)
     )
 
-    report_filename = f"Reporte_{folder_name.replace(' ', '_').replace('o_Ruben', '')}_{PERIODO.replace(' ', '_')}.html"
+    report_filename = f"Reporte_{folder_name.replace(' ', '_')}_{PERIODO.replace(' ', '_')}.html"
     report_path = os.path.join(reportes_dir, report_filename)
     
     with open(report_path, 'w', encoding='utf-8') as f:

@@ -13,18 +13,11 @@ if os.path.exists('/opt/homebrew/bin/tesseract'):
 elif os.path.exists('/usr/local/bin/tesseract'):
     pytesseract.pytesseract.tesseract_cmd = '/usr/local/bin/tesseract'
 
-# Mapeo de carpetas a nombres formales de clientes
-CLIENTES_MAP = {
-    "Ana Lilia rivera": "Ana Lilia Rivera",
-    "Ruben becerra": "Rubén Becerra Cerón",
-    "Benito Juarez o Ruben Becerra": "Rubén Becerra Cerón",
-    "Calpulalpan": "Gobierno Municipal De Calpulalpan, Tlaxcala"
-}
-
-# Configuración del reporte
+# Configuración global por defecto, sobrescribibles con argparse
 PERIODO = "Marzo 2026"
 PLATAFORMA = "Facebook"
 LUGAR = "Calpulalpan, Tlaxcala"
+CLIENTE_FORMAL = None
 
 # Plantilla HTML con Jinja2 (Diseño Híbrido: Dark Mode en Pantalla / Claro Corporativo en Imprimir PDF)
 HTML_TEMPLATE = """
@@ -708,12 +701,14 @@ def image_to_base64(img_path):
         print(f"Error convirtiendo imagen a base64: {e}")
         return ""
 
-def process_folder_and_generate_report(folder_path, folder_name, base_dir):
+def process_folder_and_generate_report(folder_path, folder_name, base_dir, cliente_formal=None, periodo=None, lugar=None):
     """
     Lee capturas, las analiza mapeando estrictamente las columnas, incorpora datos CSV
     crea un TOP 3 de impacto y genera los reportes HTML independientes.
     """
-    cliente = CLIENTES_MAP.get(folder_name, folder_name)
+    cliente = cliente_formal if cliente_formal else folder_name
+    periodo_uso = periodo if periodo else PERIODO
+    lugar_uso = lugar if lugar else LUGAR
     
     # Guardar en la carpeta "reportes" en la raíz del sitio web, un nivel arriba
     website_root = os.path.dirname(base_dir)
@@ -773,9 +768,9 @@ def process_folder_and_generate_report(folder_path, folder_name, base_dir):
     template = Template(HTML_TEMPLATE)
     html_output = template.render(
         cliente=cliente,
-        periodo=PERIODO,
+        periodo=periodo_uso,
         plataforma=PLATAFORMA,
-        lugar=LUGAR,
+        lugar=lugar_uso,
         reportes_data=report_data,
         top_posts=top_posts,
         datos_publico=datos_publico,
@@ -785,7 +780,7 @@ def process_folder_and_generate_report(folder_path, folder_name, base_dir):
         total_interacciones=format_number(sum_interacciones)
     )
 
-    report_filename = f"Reporte_{folder_name.replace(' ', '_')}_{PERIODO.replace(' ', '_')}.html"
+    report_filename = f"Reporte_{folder_name.replace(' ', '_')}_{periodo_uso.replace(' ', '_')}.html"
     report_path = os.path.join(reportes_dir, report_filename)
     
     with open(report_path, 'w', encoding='utf-8') as f:
@@ -794,35 +789,26 @@ def process_folder_and_generate_report(folder_path, folder_name, base_dir):
     print(f"✅ Reporte generado y guardado en: {report_path}")
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Generador de reportes ALFA")
+    parser.add_argument('--folder', type=str, help='Nombre de la carpeta específica (ej. client_5)')
+    parser.add_argument('--cliente', type=str, help='Nombre formal del cliente')
+    parser.add_argument('--periodo', type=str, help='El mes y año (ej. Abril 2026)')
+    parser.add_argument('--lugar', type=str, help='Ciudad y estado')
+    args = parser.parse_args()
+
     base_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Busca las carpetas objetivo en la raíz o dentro de "Testigos"
-    possible_roots = [base_dir, os.path.join(base_dir, "Testigos")]
-    
-    # Nombres de carpeta estrictos (para mantener la compatibilidad pedida)
-    folders_to_scan = list(CLIENTES_MAP.keys())
-    
-    # Agregar carpetas capitalizadas al mapeo si las encuentra en Testigos/
-    for root in possible_roots:
-        if os.path.exists(root):
-            for potential_dir in os.listdir(root):
-                if potential_dir.lower() in [k.lower() for k in CLIENTES_MAP.keys()]:
-                    # Mapear variaciones de mayúsculas/minúsculas para no perderlas
-                    real_key = next(k for k in CLIENTES_MAP.keys() if k.lower() == potential_dir.lower())
-                    CLIENTES_MAP[potential_dir] = CLIENTES_MAP[real_key]
-                    if potential_dir not in folders_to_scan:
-                        folders_to_scan.append(potential_dir)
-    
-    processed_count = 0
-    for root in possible_roots:
-        for folder_name in folders_to_scan:
-            target_folder = os.path.join(root, folder_name)
-            if os.path.exists(target_folder) and os.path.isdir(target_folder):
-                process_folder_and_generate_report(target_folder, folder_name, base_dir)
-                processed_count += 1
-                
-    if processed_count == 0:
-        print("\n[!] No se encontraron las carpetas específicas de los clientes.")
+    if args.folder:
+        # Modo Dinámico Específico
+        ruta_directa = os.path.join(base_dir, "Testigos", args.folder)
+        if not os.path.exists(ruta_directa):
+            print(f"Error: No se encontró la carpeta {ruta_directa}")
+            return
+        
+        process_folder_and_generate_report(ruta_directa, args.folder, base_dir, args.cliente, args.periodo, args.lugar)
+    else:
+        print("Uso en solitario deshabilitado sin parámetros. Use --folder client_id desde PHP.")
 
 if __name__ == "__main__":
     main()

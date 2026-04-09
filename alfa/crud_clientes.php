@@ -48,7 +48,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $hash = password_hash($password, PASSWORD_DEFAULT);
                 $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, username, password_hash, rol, tipo_organizacion, dependencia_cargo, telefono, email_contacto) VALUES (?, ?, ?, 'cliente', ?, ?, ?, ?)");
                 $stmt->execute([$nombre, $username, $hash, $tipo, $dependencia_cargo, $telefono, $email_contacto]);
-                $msg = "Cliente registrado con éxito.";
+                
+                // Generar carpeta física inmutable basada en el ID numérico
+                $new_id = $pdo->lastInsertId();
+                $ruta_carpeta = __DIR__ . '/../Archivo_Medios/Testigos/client_' . $new_id;
+                if (!file_exists($ruta_carpeta)) {
+                    mkdir($ruta_carpeta, 0755, true);
+                }
+                
+                $msg = "Cliente registrado con éxito y carpeta de evidencias generada.";
             }
             
             // Redirigir de vuelta con mensaje de éxito

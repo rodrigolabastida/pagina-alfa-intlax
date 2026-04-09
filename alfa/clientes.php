@@ -83,6 +83,9 @@ $type = $_GET['type'] ?? 'success'; // success, error
         
         .btn-edit { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
         .btn-edit:hover { background: var(--primary); color: #000; }
+        
+        .btn-reportes { display: inline-block; background: var(--primary); color: #000; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; text-decoration: none; font-weight: 600; transition: 0.2s; margin-left: 5px; }
+        .btn-reportes:hover { opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -209,6 +212,9 @@ $type = $_GET['type'] ?? 'success'; // success, error
                                             "telefono" => $c["telefono"] ?? "",
                                             "email_contacto" => $c["email_contacto"] ?? ""
                                         ]) ?>)' class="btn-edit"><i class="fas fa-pen"></i> Ajustar</button>
+                                        
+                                        <!-- Enlace interactivo a Reportes y Evidencias -->
+                                        <a href="gestionar_reporte.php?id=<?= $c['id'] ?>" class="btn-reportes"><i class="fas fa-folder-open"></i> Evidencias y Generación</a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>

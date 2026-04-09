@@ -48,7 +48,8 @@ foreach($reportes as $r) {
         .logo-font { font-family: 'Anton', sans-serif; font-size: 1.5rem; letter-spacing: 1px; }
         .logo-font span { color: var(--primary); }
         
-        .logout-btn { background: none; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: 0.3s; text-decoration: none; }
+        .action-btn { background: none; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: 0.3s; text-decoration: none; }
+        .action-btn:hover { border-color: var(--primary); color: var(--primary); }
         .logout-btn:hover { border-color: #ff4444; color: #ff4444; }
 
         .container { max-width: 1000px; margin: 0 auto; width: 100%; }
@@ -81,7 +82,10 @@ foreach($reportes as $r) {
         <div class="container">
             <header class="dash-header">
                 <div class="logo-font">INTLAX<span>.CLOUD</span> ALFA</div>
-                <a href="../logout.php" class="logout-btn">Cerrar Sesión <i class="fas fa-sign-out-alt"></i></a>
+                <div>
+                    <a href="clientes.php" class="action-btn" style="margin-right: 10px;"><i class="fas fa-users"></i> Gestor de Clientes</a>
+                    <a href="../logout.php" class="action-btn logout-btn">Cerrar Sesión <i class="fas fa-sign-out-alt"></i></a>
+                </div>
             </header>
 
             <h2 class="page-title">Centro de Mando, <strong><?= htmlspecialchars($_SESSION['nombre']) ?></strong>.</h2>

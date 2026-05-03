@@ -1,9 +1,11 @@
 import os
 import re
 import csv
+import json
 import base64
+import io
 import pytesseract
-from PIL import Image
+from PIL import Image, ImageEnhance
 from pytesseract import Output
 from jinja2 import Template
 
@@ -33,6 +35,7 @@ HTML_TEMPLATE = """
     <!-- Fuentes y FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             /* Variables globales para Pantalla (DARK MODE) */
@@ -123,10 +126,48 @@ HTML_TEMPLATE = """
         .glossary-list li:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .glossary-list strong { color: var(--text-primary); display: inline-block; min-width: 150px; }
 
-        /* --- ANEXOS TESTIGOS --- */
-        .anexos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+        /* --- COMPARATIVO MOM --- */
+        .mom-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 768px) { .mom-grid { grid-template-columns: 1fr; } }
+        .mom-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        .mom-label { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;}
+        .mom-value { font-size: 2rem; font-weight: 700; margin-bottom: 5px; color: var(--text-primary); }
+        .mom-diff { font-size: 1.1rem; font-weight: 600; }
+        .positive { color: #10b981; }
+        .negative { color: #ef4444; }
+        .neutral { color: var(--text-secondary); }
 
-        .card {
+        /* --- ANEXOS TESTIGOS --- */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 40px 0 20px 0;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        } .card {
             background-color: var(--bg-surface);
             border-radius: 12px; overflow: hidden;
             border: 1px solid var(--border-color);
@@ -136,20 +177,20 @@ HTML_TEMPLATE = """
         .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.6); border-color: var(--accent); }
 
         .card-img-wrapper {
-            width: 100%; height: 300px;
+            width: 100%; height: 200px;
             background-color: #050505;
             display: flex; align-items: center; justify-content: center;
             border-bottom: 1px solid var(--border-color); padding: 5px;
         }
         .card img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        .metrics-container { padding: 20px; background-color: var(--bg-card); }
-        .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border-color); }
+        .metrics-container { padding: 15px; background-color: var(--bg-card); }
+        .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--border-color); }
         .metric-row:last-child { border-bottom: none; }
-        .metric-label { font-size: 1rem; color: var(--text-secondary); font-weight: 500; }
-        .metric-value { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
-        .filename-caption { font-size: 0.75rem; color: #52525b; text-align: center; margin-top: 15px; word-wrap: break-word; }
-        .post-title-extract { font-size: 0.85rem; color: var(--text-primary); font-weight: 600; font-style: italic; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed var(--border-color); line-height: 1.4; }
+        .metric-label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+        .metric-value { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+        .filename-caption { font-size: 0.7rem; color: #52525b; text-align: center; margin-top: 10px; word-wrap: break-word; }
+        .post-title-extract { font-size: 0.8rem; color: var(--text-primary); font-weight: 600; font-style: italic; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed var(--border-color); line-height: 1.3; height: 2.6em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 
         .fa-yellow { color: var(--accent); margin-right: 6px;}
 
@@ -245,8 +286,18 @@ HTML_TEMPLATE = """
     <!-- PORTADA -->
     <header>
         <span class="intlax-branding"><span class="text-accent">IN</span>TLAX.CLAUD</span>
+        {% if info_cliente.entidad %}
+        <div style="font-family: 'Montserrat', sans-serif; font-size: 1.2rem; color: var(--accent); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">
+            {{ info_cliente.entidad }}
+        </div>
+        {% endif %}
         <h1 class="main-title">Reporte Ejecutivo de Desempeño</h1>
         <h2 class="subtitle">{{ cliente }}</h2>
+        {% if info_cliente.dirigido_a %}
+        <p style="color: var(--text-secondary); margin-top: -20px; margin-bottom: 25px; font-style: italic; font-size: 1.1rem;">
+            Presentado a: {{ info_cliente.dirigido_a }}
+        </p>
+        {% endif %}
         
         <div class="details-badge">
             <div><span>Plataforma:</span> <strong>{{ plataforma }}</strong></div>
@@ -282,30 +333,68 @@ HTML_TEMPLATE = """
         </div>
     </div>
 
-    <!-- TOP 3 PODIO PUBLICACIONES -->
     {% if top_posts and top_posts|length > 0 %}
     <div class="section-box">
         <h2 class="section-title"><i class="fas fa-award fa-yellow"></i> Top 3 Contenidos Destacados</h2>
-        <div class="anexos-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="anexos-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
             {% for idx, item in enumerate_top(top_posts) %}
-            <div class="card" style="border: {% if idx == 1 %}2px solid var(--accent){% elif idx == 2 %}2px solid #C0C0C0{% else %}2px solid #CD7F32{% endif %}; position: relative;">
+            <div class="card" style="border: {% if idx == 1 %}2px solid var(--accent){% elif idx == 2 %}2px solid #94a3b8{% else %}2px solid #b45309{% endif %}; position: relative;">
                 
-                <div style="position: absolute; top: 0; right: 0; padding: 3px 10px; border-bottom-left-radius: 6px; font-weight: bold; font-size: 0.75rem; background: {% if idx == 1 %}var(--accent); color: #000{% elif idx == 2 %}#C0C0C0; color: #000{% else %}#CD7F32; color: #fff{% endif %}; z-index: 10;">
-                    Rango #{{ idx }}
+                <div style="position: absolute; top: 0; right: 0; padding: 3px 8px; border-bottom-left-radius: 6px; font-weight: bold; font-size: 0.7rem; background: {% if idx == 1 %}var(--accent); color: #000{% elif idx == 2 %}#94a3b8; color: #000{% else %}#b45309; color: #fff{% endif %}; z-index: 10; text-transform: uppercase;">
+                    #{{ idx }}
                 </div>
 
-                <div class="card-img-wrapper">
-                    <img src="{{ item.relative_img_path }}" alt="Testigo fotográfico {{ idx }}">
+                <div class="card-img-wrapper" style="height: 160px;">
+                    <img src="{{ item.relative_img_path }}" alt="Top {{ idx }}">
                 </div>
-                <div class="metrics-container" style="background-color: var(--bg-card);">
-                    <div class="post-title-extract">"{{ item.metrics.get('Titulo', '') }}"</div>
-                    <div class="metric-row">
-                        <span class="metric-label" style="font-weight:700;"><i class="fas fa-eye fa-yellow"></i> Visualizaciones</span>
-                        <span class="metric-value">{{ item.metrics['Visualizaciones'] }}</span>
+                <div class="metrics-container" style="padding: 12px;">
+                    <div class="post-title-extract" style="font-size: 0.75rem; height: 3em;">"{{ item.metrics.get('Titulo', '') }}"</div>
+                    <div class="metric-row" style="padding: 5px 0;">
+                        <span class="metric-label" style="font-size: 0.8rem;"><i class="fas fa-eye fa-yellow"></i> Vistas</span>
+                        <span class="metric-value" style="font-size: 0.9rem;">{{ item._display_vis }}</span>
                     </div>
                 </div>
             </div>
             {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- COMPARATIVO HISTÓRICO -->
+    {% if has_comparativo %}
+    <div class="section-box">
+        <h2 class="section-title"><i class="fas fa-rocket fa-yellow"></i> Crecimiento (vs {{ prev_period_name }})</h2>
+        <div class="mom-grid">
+            <div class="mom-card">
+                <div class="mom-label">Visualizaciones</div>
+                <div class="mom-value">{{ total_visualizaciones }}</div>
+                <div class="mom-diff {{ d_vis_cls }}">
+                    <i class="fas {{ d_vis_icn }}"></i> {{ diff_vis }}%
+                </div>
+                <div class="chart-container" style="height: 120px; margin-top: 15px;">
+                    <canvas id="chartVis"></canvas>
+                </div>
+            </div>
+            <div class="mom-card">
+                <div class="mom-label">Espectadores</div>
+                <div class="mom-value">{{ total_espectadores }}</div>
+                <div class="mom-diff {{ d_esp_cls }}">
+                    <i class="fas {{ d_esp_icn }}"></i> {{ diff_esp }}%
+                </div>
+                <div class="chart-container" style="height: 120px; margin-top: 15px;">
+                    <canvas id="chartEsp"></canvas>
+                </div>
+            </div>
+            <div class="mom-card">
+                <div class="mom-label">Interacciones</div>
+                <div class="mom-value">{{ total_interacciones }}</div>
+                <div class="mom-diff {{ d_int_cls }}">
+                    <i class="fas {{ d_int_icn }}"></i> {{ diff_int }}%
+                </div>
+                <div class="chart-container" style="height: 120px; margin-top: 15px;">
+                    <canvas id="chartInt"></canvas>
+                </div>
+            </div>
         </div>
     </div>
     {% endif %}
@@ -381,9 +470,14 @@ HTML_TEMPLATE = """
     <!-- ANEXOS TESTIGOS -->
     <div class="section-box" style="margin-bottom: 0;">
         <h2 class="section-title"><i class="fas fa-camera fa-yellow"></i> Expediente Fotográfico de Evidencias</h2>
-        {% if reportes_data %}
-        <div class="anexos-grid">
-            {% for item in reportes_data %}
+        {% if reportes_data_meta or reportes_data_tiktok %}
+        
+        <div class="section-header">
+            <i class="fab fa-facebook fa-2x" style="color: #1877F2;"></i>
+            <h2>Testigos Meta Business Suite</h2>
+        </div>
+        <div class="gallery-grid">
+            {% for item in reportes_data_meta %}
             <div class="card">
                 <div class="card-img-wrapper">
                     <img src="{{ item.relative_img_path }}" alt="Testigo fotográfico">
@@ -392,21 +486,54 @@ HTML_TEMPLATE = """
                     <div class="post-title-extract">"{{ item.metrics.get('Titulo', '') }}"</div>
                     <div class="metric-row">
                         <span class="metric-label">Visualizaciones</span>
-                        <span class="metric-value">{{ item.metrics['Visualizaciones'] }}</span>
+                        <span class="metric-value">{{ item._display_vis }}</span>
                     </div>
                     <div class="metric-row">
                         <span class="metric-label">Espectadores</span>
-                        <span class="metric-value">{{ item.metrics['Espectadores'] }}</span>
+                        <span class="metric-value">{{ item._display_esp }}</span>
                     </div>
                     <div class="metric-row">
                         <span class="metric-label">Interacci.</span>
-                        <span class="metric-value">{{ item.metrics['Interacciones'] }}</span>
+                        <span class="metric-value">{{ item._display_int }}</span>
                     </div>
                     <div class="filename-caption">{{ item.filename }}</div>
                 </div>
             </div>
             {% endfor %}
         </div>
+
+        {% if reportes_data_tiktok|length > 0 %}
+        <div class="section-header" style="margin-top: 60px;">
+            <i class="fab fa-tiktok fa-2x" style="color: #fff;"></i>
+            <h2>Testigos TikTok Studio</h2>
+        </div>
+        <div class="gallery-grid">
+            {% for item in reportes_data_tiktok %}
+            <div class="card" style="border-color: #ff0050;">
+                <div class="card-img-wrapper">
+                    <img src="{{ item.relative_img_path }}" alt="Testigo fotográfico">
+                </div>
+                <div class="metrics-container">
+                    <div class="post-title-extract">"{{ item.metrics.get('Titulo', '') }}"</div>
+                    <div class="metric-row">
+                        <span class="metric-label">Visualizaciones</span>
+                        <span class="metric-value">{{ item._display_vis }}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Interacciones</span>
+                        <span class="metric-value">{{ item._display_int }}</span>
+                    </div>
+                    <div class="metric-row" style="opacity: 0.5;">
+                        <span class="metric-label">Plataforma</span>
+                        <span class="metric-value">TikTok</span>
+                    </div>
+                    <div class="filename-caption">{{ item.filename }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         {% else %}
         <p style="text-align: center; color: var(--text-secondary);">No se detectaron fotografías legibles en este lote.</p>
         {% endif %}
@@ -457,6 +584,60 @@ HTML_TEMPLATE = """
     </div>
 </footer>
 
+    {% if has_comparativo %}
+    <script>
+        function createMoMChart(id, label, prevVal, currVal, prevLabel, currLabel) {
+            const canvas = document.getElementById(id);
+            const ctx = canvas.getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [prevLabel, currLabel],
+                    datasets: [{
+                        label: label,
+                        data: [prevVal, currVal],
+                        backgroundColor: ['#64748b', '#f59e0b'],
+                        borderColor: ['#475569', '#d97706'],
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barThickness: 45
+                    }]
+                },
+                options: {
+                    animation: { duration: 0 },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    },
+                    scales: {
+                        y: { display: false, beginAtZero: true },
+                        x: {
+                            ticks: { color: '#000000', font: { size: 12, weight: '700' } },
+                            grid: { display: false, drawBorder: false }
+                        }
+                    }
+                }
+            });
+
+            // Convertir a imagen estática para asegurar compatibilidad con PDF
+            setTimeout(() => {
+                const img = document.createElement('img');
+                img.src = chart.toBase64Image();
+                img.style.width = '100%';
+                img.style.height = '100%';
+                canvas.parentNode.replaceChild(img, canvas);
+            }, 100);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createMoMChart('chartVis', 'Visualizaciones', {{ prev_vis }}, {{ curr_vis }}, '{{ prev_period_short }}', '{{ curr_period_short }}');
+            createMoMChart('chartEsp', 'Espectadores', {{ prev_esp }}, {{ curr_esp }}, '{{ prev_period_short }}', '{{ curr_period_short }}');
+            createMoMChart('chartInt', 'Interacciones', {{ prev_int }}, {{ curr_int }}, '{{ prev_period_short }}', '{{ curr_period_short }}');
+        });
+    </script>
+    {% endif %}
 </body>
 </html>
 """
@@ -474,18 +655,173 @@ def format_number(num):
     """ Retorna un string formateado con comas. Ej: 15400 -> '15,400' """
     return "{:,}".format(num)
 
+MESES_MAP = {
+    'enero': 1, 'febrero': 2, 'marzo': 3, 'abril': 4,
+    'mayo': 5, 'junio': 6, 'julio': 7, 'agosto': 8,
+    'septiembre': 9, 'octubre': 10, 'noviembre': 11, 'diciembre': 12
+}
+
+def parse_periodo(periodo_str):
+    parts = periodo_str.split(' ')
+    if len(parts) == 2:
+        mes = parts[0].lower()
+        anio = int(parts[1])
+        mes_val = MESES_MAP.get(mes, 0)
+        return (anio, mes_val)
+    return (0, 0)
+
+def calculate_mom(current, previous):
+    if previous == 0:
+        return 100.0 if current > 0 else 0.0
+    return ((current - previous) / previous) * 100
+def get_diff_ui(diff_val):
+    if diff_val > 0:
+        return "positive", "fa-arrow-up"
+    elif diff_val < 0:
+        return "negative", "fa-arrow-down"
+    return "neutral", "fa-minus"
+
+def extract_tiktok_metrics(img_path):
+    """ Extrae métricas de capturas de TikTok Studio (Resumen de Video). """
+    base_metrics = {
+        'Titulo': "Video de TikTok",
+        'Visualizaciones': "0",
+        'Espectadores': "0",
+        'Interacciones': "0"
+    }
+    try:
+        img = Image.open(img_path).convert('L')
+        data = pytesseract.image_to_data(img, lang='spa+eng', config='--psm 6', output_type=Output.DICT)
+        
+        words = []
+        for i in range(len(data['text'])):
+            w_text = data['text'][i].lower().strip()
+            if w_text:
+                words.append({
+                    "text": w_text,
+                    "left": data['left'][i],
+                    "top": data['top'][i],
+                    "width": data['width'][i],
+                    "height": data['height'][i]
+                })
+
+        # TikTok Studio Layout:
+        # 1. "Visualizaciones del video" -> El número está justo DEBAJO
+        # 2. Iconos arriba a la derecha: Likes, Comentarios, Compartidos, Guardados
+        
+        mapping = {
+            "Visualizaciones": ["visualizaciones", "vistas", "views", "reproducciones"],
+            "Likes": ["gusta", "likes", "corazón"],
+            "Comments": ["comentarios", "comments"],
+            "Shares": ["compartidos", "shares"],
+            "Saves": ["guardados", "saves"]
+        }
+        
+        extracted_vals = {"Visualizaciones": "0", "Likes": "0", "Comments": "0", "Shares": "0", "Saves": "0"}
+        
+        for m_key, kws in mapping.items():
+            h_rect = None
+            for w in words:
+                if any(kw in w["text"] for kw in kws):
+                    h_rect = w
+                    break
+            
+            if h_rect:
+                # Buscar número arriba o abajo (TikTok a veces los pone arriba de la palabra)
+                for w in words:
+                    if abs(w["left"] + w["width"]/2 - (h_rect["left"] + h_rect["width"]/2)) < 80:
+                        if abs(w["top"] - h_rect["top"]) < 100 and re.search(r'\d', w["text"]):
+                            extracted_vals[m_key] = w["text"]
+                            break
+        
+        total_int = parse_metric_to_int(extracted_vals["Likes"]) + parse_metric_to_int(extracted_vals["Comments"]) + \
+                    parse_metric_to_int(extracted_vals["Shares"]) + parse_metric_to_int(extracted_vals["Saves"])
+        
+        base_metrics['Visualizaciones'] = extracted_vals["Visualizaciones"]
+        base_metrics['Espectadores'] = extracted_vals["Visualizaciones"]
+        base_metrics['Interacciones'] = str(total_int)
+        
+        # --- EXTRACCIÓN DE TÍTULO TIKTOK (Surgical Anchor) ---
+        anchor_w = None
+        for w in words:
+            if "publicado" in w["text"].lower():
+                anchor_w = w
+                break
+        
+        if anchor_w:
+            # El título está justo ARRIBA del anchor
+            title_candidates = []
+            for w in words:
+                if (anchor_w["top"] - 180) < w["top"] < (anchor_w["top"] - 5):
+                    if w["left"] > 150: # Evitar sidebar
+                        title_candidates.append(w)
+            
+            if title_candidates:
+                title_candidates.sort(key=lambda x: (x["top"] // 20, x["left"]))
+                base_metrics['Titulo'] = " ".join([c["text"] for c in title_candidates[:15]])
+        
+        # Fallback si no hay anchor
+        if base_metrics['Titulo'] == "Video de TikTok":
+            potential_titles = [w["text"] for w in words if 300 < w["top"] < 600 and len(w["text"]) > 4]
+            if potential_titles:
+                base_metrics['Titulo'] = " ".join(potential_titles[:10])
+
+        return base_metrics
+    except Exception as e:
+        print(f"Error procesando tiktok {img_path}: {e}")
+        return base_metrics
+
 def parse_metric_to_int(val_str):
-    """ Convierte cadenas como '1.5k', '5 mil', '1,200' a enteros matemáticos. """
+    """ Convierte cadenas como '1.5k', '5 mil', '1,200', '100,1 mil' a enteros matemáticos. """
     if not val_str or val_str == "N/D":
         return 0
-    val = val_str.lower().replace(',', '')
+    
+    # Limpieza: remover ruidos y normalizar
+    val = str(val_str).lower().replace(' ', '').replace('\n', '')
+    # Eliminar duplicados de 'mil'
+    while 'milmil' in val: val = val.replace('milmil', 'mil')
+    val = val.strip()
+    
     try:
+        # CASO 1: Tiene multiplicador (k o mil)
         if 'k' in val or 'mil' in val:
             v_clean = val.replace('k', '').replace('mil', '').strip()
+            # En este caso, tanto la coma como el punto suelen ser decimales (14,1 mil o 14.1 mil)
+            v_clean = v_clean.replace(',', '.')
+            
+            # Si hay múltiples puntos, dejar solo el primero
+            if v_clean.count('.') > 1:
+                parts = v_clean.split('.')
+                v_clean = parts[0] + "." + "".join(parts[1:])
+                
             return int(float(v_clean) * 1000)
-        return int(float(val))
+        
+        # CASO 2: Número sin multiplicador explícito
+        else:
+            # Si hay comas y puntos, la coma es miles y el punto es decimal (formato estándar)
+            if ',' in val and '.' in val:
+                v_clean = val.replace(',', '')
+                return int(float(v_clean))
+            
+            # Si hay solo un separador
+            if ',' in val:
+                parts = val.split(',')
+                if len(parts[-1]) == 3: # 1,200 -> 1200
+                    return int(val.replace(',', ''))
+                else: # 14,1 -> 14100 (asumimos mil por la coma)
+                    return int(float(val.replace(',', '.')) * 1000)
+            
+            if '.' in val:
+                parts = val.split('.')
+                if len(parts[-1]) == 3: # 1.200 -> 1200
+                    return int(val.replace('.', ''))
+                else: # 14.1 -> 14100
+                    return int(float(val) * 1000)
+            
+            return int(val)
     except (ValueError, TypeError):
-        return 0
+        digits = re.sub(r'[^\d]', '', val)
+        return int(digits) if digits else 0
 
 def extract_metrics_by_coordinates(img_path):
     """
@@ -509,105 +845,116 @@ def extract_metrics_by_coordinates(img_path):
         print(f"Error realizando OCR: {e}")
         return metrics
 
-    # === 1. Extraer el Título (Parte superior izquierda) ===
-    # Juntamos texto válido hasta topar con UI de Facebook o rebasar 70 caracteres
-    valid_words = []
-    for i, texto in enumerate(data['text']):
-        w_clean = texto.strip('.:,-_@OQ0)(\|][{}<>\'\"')
-        if w_clean:
-            valid_words.append({
-                "text": texto,
+    # === 1. Localizar palabras en la imagen ===
+    words = []
+    for i in range(len(data['text'])):
+        w_text = data['text'][i].strip()
+        if w_text:
+            words.append({
+                "text": w_text,
+                "left": data['left'][i],
                 "top": data['top'][i],
-                "left": data['left'][i]
+                "width": data['width'][i],
+                "height": data['height'][i]
             })
-            
-    # Ordenar estrictamente de arriba hacia abajo (top) para leer secuencialmente el header
-    valid_words.sort(key=lambda x: x['top'])
     
-    titulo_extracto = []
-    for w in valid_words:
-        txt = w['text']
-        txt_l = txt.lower().strip()
-        
-        # Palabras reservadas de la App que nos indican que YA SALIMOS del Título de la Foto
-        if txt_l in ['publicación', 'resumen', 'vista', 'previa', 'publicado', 'promocionar', 'interacciones', 'visualizaciones', 'feed', 'editar']:
-            break
-            
-        # Filtro de basura OCR
-        if len(txt) <= 2 and not txt.isupper() and not txt.isalnum():
-            continue
-            
-        titulo_extracto.append(txt)
-        
-        # Limite estético visual (dar una idea sin robar espacio)
-        if len(" ".join(titulo_extracto)) > 70:
-            titulo_extracto.append("...")
-            break
-            
-    if titulo_extracto:
-        metrics["Titulo"] = " ".join(titulo_extracto).strip()
+    # Ordenar por posición real
+    words.sort(key=lambda x: (x["top"], x["left"]))
 
-    # === 2. Coordenadas de Columnas Métricas ===
+    # === 2. Extraer el Título (Meta - Surgical Anchor) ===
+    anchor_w = None
+    for w in words:
+        if "publicado" in w["text"].lower():
+            anchor_w = w
+            break
+    
+    if anchor_w:
+        title_candidates = []
+        # Buscar arriba del anchor "Publicado"
+        for w in words:
+            if (anchor_w["top"] - 180) < w["top"] < (anchor_w["top"] - 5):
+                # Evitar basura de la URL o UI superior
+                if w["top"] > 150: 
+                    title_candidates.append(w)
+        
+        if title_candidates:
+            title_candidates.sort(key=lambda x: (x["top"] // 15, x["left"]))
+            metrics["Titulo"] = " ".join([c["text"] for c in title_candidates[:15]])
+    
+    # Fallback si no hay anchor o quedó vacío
+    if metrics["Titulo"] == "Publicación de Meta":
+        potential = [w["text"] for w in words if 200 < w["top"] < 400 and len(w["text"]) > 5]
+        if potential:
+            metrics["Titulo"] = " ".join(potential[:10])
+
+    # === 3. Coordenadas de Columnas Métricas ===
     headers = {
-        "visualizaciones": {"rect": None, "val": ""},
-        "espectadores": {"rect": None, "val": ""},
-        "interacciones": {"rect": None, "val": ""}
+        "visualizaciones": {"rect": None, "val": "", "keywords": ["visualizaciones", "reproducciones", "vistas"]},
+        "espectadores": {"rect": None, "val": "", "keywords": ["espectadores", "alcance", "público", "personas"]},
+        "interacciones": {"rect": None, "val": "", "keywords": ["interacciones", "reacciones", "engagement", "clics"]}
     }
     
-    baseline_y = -1
-    
-    # 1. Definir los límites X horizontales de las columnas
-    for i, word in enumerate(data['text']):
-        w_lower = word.lower().strip('.:,O@Q0) ')
-        if not w_lower: continue
-        
-        for h_key in headers.keys():
-            if h_key in w_lower and headers[h_key]["rect"] is None:
-                # Si encontramos el encabezado, guardamos sus coordenadas X e Y
-                headers[h_key]["rect"] = {
-                    "left": data['left'][i],
-                    "right": data['left'][i] + data['width'][i]
-                }
+    for h_key, h_info in headers.items():
+        for w in words:
+            if any(kw in w["text"].lower() for kw in h_info["keywords"]):
+                h_info["rect"] = w
+                break 
+
+    # 2. Buscar el número más cercano debajo de cada encabezado
+    for h_key, h_info in headers.items():
+        if h_info["rect"]:
+            h_rect = h_info["rect"]
+            best_val = ""
+            candidates = []
+            for w in words:
+                # El número debe estar DEBAJO del encabezado
+                # Aumentamos el rango vertical para capturar números que estén un poco más abajo
+                if w["top"] > (h_rect["top"] + h_rect["height"]) and (w["top"] - h_rect["top"]) < 300:
+                    # El centro X del número debe estar alineado con el encabezado
+                    w_center = w["left"] + w["width"] / 2
+                    h_center = h_rect["left"] + h_rect["width"] / 2
+                    if abs(w_center - h_center) < (h_rect["width"] / 2 + 80):
+                        # IMPORTANTE: No puede ser el mismo texto del encabezado (evitar duplicados)
+                        if any(kw in w["text"] for kw in h_info["keywords"]):
+                            continue
+                        # Si contiene dígitos o es la palabra 'mil', es un candidato
+                        if re.search(r'\d', w["text"]) or w["text"] in ["mil", "k"]:
+                            candidates.append(w)
+            
+            # Ordenar por posición para reconstruir el número (ej: "14," "1" "mil")
+            # Usamos un margen de 20px en 'top' para agrupar palabras en la misma línea
+            candidates.sort(key=lambda x: (x["top"] // 20, x["left"]))
+            
+            val_parts = []
+            seen_texts = set()
+            if candidates:
+                # Tomamos la primera línea de números que aparezca debajo del título
+                first_row_y = candidates[0]["top"]
+                for c in candidates:
+                    if abs(c["top"] - first_row_y) < 50:
+                        txt = c["text"]
+                        if txt not in seen_texts:
+                            val_parts.append(txt)
+                            seen_texts.add(txt)
                 
-                # Registramos en qué piso Y están estos encabezados
-                if baseline_y == -1 or data['top'][i] < baseline_y + 30:
-                    baseline_y = data['top'][i]
-
-    # 2. Escanear todo lo que está más abajo de los encabezados (fila de resultados)
-    for i, word in enumerate(data['text']):
-        raw_word = word.strip().replace('O', '0').replace(')', '').replace('_', '')
-        if not raw_word or not re.search(r'\d', raw_word):
-            continue
+                best_val = " ".join(val_parts)
+                # Si el número parece decimal pero le falta el 'mil'
+                if best_val and not any(m in best_val.lower() for m in ["mil", "k"]):
+                    if "," in best_val or "." in best_val:
+                        best_val += " mil"
             
-        w_top = data['top'][i]
-        w_left = data['left'][i]
-        w_right = w_left + data['width'][i]
-        
-        # Tiene que estar en el renglón de abajo del título (baseline_y), 
-        # pero no tan abajo como para saltar a otra sección
-        if baseline_y != -1 and w_top > baseline_y and (w_top - baseline_y) < 180:
-            
-            # Revisar en cuál de las zapatas de nuestras columnas cae
-            for h_key, h_data in headers.items():
-                if h_data["rect"]:
-                    # Margen de holgura por si el número está centrado o muy pegado
-                    h_left = h_data["rect"]["left"] - 45
-                    h_right = h_data["rect"]["right"] + 45
-                    
-                    if w_left >= h_left and w_right <= h_right:
-                        # Acumulamos el texto (Meta a veces divide "16.704" en "1", "6.", "704")
-                        h_data["val"] += raw_word
+            h_info["val"] = best_val.strip()
 
-    # 3. Limpiar valores acumulados matemáticamente exactos
+    # 3. Limpiar y asignar
     for k in metrics.keys():
-        if k == "Titulo":
-            continue
+        if k == "Titulo": continue
         v = headers[k.lower()]["val"]
         if v:
-            # Eliminamos basura y dejamos solo números e indicadores de miles si los hubiera
+            # Dejar números, puntos, comas y multiplicadores
             cleaned_v = re.sub(r'[^\d.,kKmil]', '', v)
-            if cleaned_v:
-                metrics[k] = cleaned_v
+            # Limpieza final de duplicados como "milmil"
+            cleaned_v = cleaned_v.replace('milmil', 'mil')
+            if cleaned_v: metrics[k] = cleaned_v
 
     return metrics
 
@@ -690,34 +1037,65 @@ def analizar_publico(path_csv):
         return None
 
 def image_to_base64(img_path):
-    """Convierte la imagen original en Base64 para incrustarla dentro del HTML"""
+    """Convierte la imagen en Base64 con compresión y redimensionado para reducir el peso del HTML"""
     try:
-        with open(img_path, "rb") as img_file:
-            encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
-            ext = os.path.splitext(img_path)[1].lower()
-            mime_type = "image/png" if ext == ".png" else "image/jpeg"
-            return f"data:{mime_type};base64,{encoded_string}"
+        with Image.open(img_path) as img:
+            # Convertir a RGB si es necesario (JPEG no soporta transparencia/alfa)
+            if img.mode in ("RGBA", "P"):
+                img = img.convert("RGB")
+            
+            # Redimensionar si es muy grande (máximo 1200px de ancho)
+            MAX_WIDTH = 1200
+            if img.width > MAX_WIDTH:
+                w_percent = (MAX_WIDTH / float(img.width))
+                h_size = int((float(img.height) * float(w_percent)))
+                img = img.resize((MAX_WIDTH, h_size), Image.Resampling.LANCZOS)
+            
+            # Guardar en un buffer de memoria con compresión JPEG (Calidad 70)
+            buffer = io.BytesIO()
+            img.save(buffer, format="JPEG", quality=70, optimize=True)
+            encoded_string = base64.b64encode(buffer.getvalue()).decode('utf-8')
+            
+            return f"data:image/jpeg;base64,{encoded_string}"
     except Exception as e:
-        print(f"Error convirtiendo imagen a base64: {e}")
-        return ""
+        print(f"Error comprimiendo imagen {img_path}: {e}")
+        # Intento de fallback si PIL falla
+        try:
+            with open(img_path, "rb") as img_file:
+                encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
+                ext = os.path.splitext(img_path)[1].lower()
+                mime_type = "image/png" if ext == ".png" else "image/jpeg"
+                return f"data:{mime_type};base64,{encoded_string}"
+        except:
+            return ""
 
 def process_folder_and_generate_report(folder_path, folder_name, base_dir, cliente_formal=None, periodo=None, lugar=None):
     """
     Lee capturas, las analiza mapeando estrictamente las columnas, incorpora datos CSV
     crea un TOP 3 de impacto y genera los reportes HTML independientes.
     """
-    cliente = cliente_formal if cliente_formal else folder_name
+    cliente = cliente_formal if cliente_formal else os.path.basename(folder_name)
     periodo_uso = periodo if periodo else PERIODO
     lugar_uso = lugar if lugar else LUGAR
     
-    # Guardar en la carpeta "reportes" en la raíz del sitio web, un nivel arriba
+    # Guardar en la carpeta "reportes" en la raíz del sitio web, organizado por mes
     website_root = os.path.dirname(base_dir)
-    reportes_dir = os.path.join(website_root, "reportes")
+    mes_subfolder = periodo_uso.split(' ')[0] if periodo_uso else "General"
+    reportes_dir = os.path.join(website_root, "reportes", mes_subfolder)
     
     if not os.path.exists(reportes_dir):
         os.makedirs(reportes_dir)
 
     print(f"\n--- Iniciando creación de reporte para: {cliente} ---")
+    
+    # Cargar información extra del cliente (Entidad, Dirigido a)
+    info_cliente = {}
+    try:
+        with open(os.path.join(base_dir, "clientes_info.json"), 'r', encoding='utf-8') as f:
+            clientes_data = json.load(f)
+            info_cliente = clientes_data.get(cliente, {})
+    except Exception as e:
+        print(f"[Aviso] No se pudo cargar clientes_info.json o no existe el cliente: {e}")
     
     # Intentar cargar CSV público
     ruta_csv = os.path.join(base_dir, "Datos", "publico_intlax_marzo_2026.csv")
@@ -726,44 +1104,144 @@ def process_folder_and_generate_report(folder_path, folder_name, base_dir, clien
         print("[Datos] Se ha detectado e integrado el anexo CSV demográfico filtrado por Continente Americano.")
     
     valid_exts = ('.jpg', '.jpeg', '.png')
-    report_data = []
+    report_data_meta = []
+    report_data_tiktok = []
+    all_posts = []
 
     sum_visualizaciones = 0
     sum_espectadores = 0
     sum_interacciones = 0
 
-    for filename in os.listdir(folder_path):
-        if filename.lower().endswith(valid_exts) and not filename.startswith('.'):
-            img_path = os.path.abspath(os.path.join(folder_path, filename))
-            print(f"[{folder_name}] Leyendo coordenadas en: {filename}...")
+    plataformas = ["Meta", "TikTok"]
+    
+    for plat in plataformas:
+        plat_dir = os.path.join(folder_path, plat)
+        if not os.path.exists(plat_dir):
+            continue
             
-            try:
-                metrics = extract_metrics_by_coordinates(img_path)
+        for filename in os.listdir(plat_dir):
+            if filename.lower().endswith(valid_exts) and not filename.startswith('.'):
+                img_path = os.path.abspath(os.path.join(plat_dir, filename))
+                print(f"[{folder_name} - {plat}] Leyendo coordenadas en: {filename}...")
                 
-                v_calc = parse_metric_to_int(metrics['Visualizaciones'])
-                sum_visualizaciones += v_calc
-                sum_espectadores += parse_metric_to_int(metrics['Espectadores'])
-                sum_interacciones += parse_metric_to_int(metrics['Interacciones'])
-                
-                base64_img_data = image_to_base64(img_path)
-                
-                report_data.append({
-                    "filename": filename,
-                    "relative_img_path": base64_img_data,
-                    "metrics": metrics,
-                    "_orden_visualizaciones": v_calc # Usado internamente para el TOP 3
-                })
-                
-            except Exception as e:
-                print(f"Error procesando imagen {filename}: {e}")
+                try:
+                    is_tiktok = (plat == "TikTok")
+                    if is_tiktok:
+                        metrics = extract_tiktok_metrics(img_path)
+                    else:
+                        metrics = extract_metrics_by_coordinates(img_path)
+                    
+                    v_calc = parse_metric_to_int(metrics['Visualizaciones'])
+                    v_esp = parse_metric_to_int(metrics['Espectadores'])
+                    v_int = parse_metric_to_int(metrics['Interacciones'])
+                    
+                    # --- CONSISTENCY CHECK ---
+                    # 1. El Alcance (Espectadores) no puede ser mayor que las Impresiones (Visualizaciones)
+                    if not is_tiktok and v_esp > v_calc and v_calc > 0:
+                        if v_esp > v_calc * 5: v_esp = v_esp // 10
+                        if v_esp > v_calc: v_esp = v_calc
+                    
+                    # 2. Las Visualizaciones no suelen ser 10 veces mayores que el Alcance (Ratio Check)
+                    # Si Vis > Esp * 8, es muy probable que el OCR leyó "57,1 mil" como "571 mil" (error 10x)
+                    if not is_tiktok and v_esp > 0 and v_calc > v_esp * 8:
+                        # Corregir el 10x de visualizaciones si el ratio es absurdo
+                        v_calc = v_calc // 10
+                    
+                    print(f"   [OCR DEBUG] {filename} -> Vis: {v_calc} | Esp: {v_esp} | Int: {v_int} | (Original: V={metrics['Visualizaciones']}, E={metrics['Espectadores']})")
+                    
+                    sum_visualizaciones += v_calc
+                    sum_espectadores += v_esp
+                    sum_interacciones += v_int
+                    
+                    base64_img_data = image_to_base64(img_path)
+                    
+                    post_data = {
+                        "filename": filename,
+                        "relative_img_path": base64_img_data,
+                        "metrics": {
+                            "Titulo": metrics.get("Titulo", "Publicación"),
+                            "Visualizaciones": format_number(v_calc),
+                            "Espectadores": format_number(v_esp),
+                            "Interacciones": format_number(v_int)
+                        },
+                        "_orden_visualizaciones": v_calc,
+                        "_display_vis": format_number(v_calc),
+                        "_display_esp": format_number(v_esp),
+                        "_display_int": format_number(v_int)
+                    }
+                    
+                    all_posts.append(post_data)
+                    
+                    if is_tiktok:
+                        report_data_tiktok.append(post_data)
+                    else:
+                        report_data_meta.append(post_data)
+                    
+                except Exception as e:
+                    print(f"Error procesando imagen {filename}: {e}")
 
-    # Extraer el Top 3 por Visualizaciones (Orden Numérico Descendente)
-    top_posts = sorted(report_data, key=lambda x: x["_orden_visualizaciones"], reverse=True)[:3]
+    # Extraer el Top 3 por Visualizaciones combinando todo
+    top_posts = sorted(all_posts, key=lambda x: x["_orden_visualizaciones"], reverse=True)[:3]
 
     # Helper function para Jinja ya que de forma nativa a veces jinja2 requiere emular enumerate()
     def enumerate_top(lista):
         # Devuelve (1, list[0]), (2, list[1]), (3, list[2])
         return [(i+1, v) for i, v in enumerate(lista)]
+
+    # === Logica Comparativa MoM ===
+    data_list = []
+    testigos_dir = os.path.dirname(os.path.dirname(folder_path)) if "Testigos" in folder_path else os.path.join(base_dir, "Testigos")
+    
+    if os.path.exists(testigos_dir):
+        for periodo_folder in os.listdir(testigos_dir):
+            periodo_path = os.path.join(testigos_dir, periodo_folder)
+            if os.path.isdir(periodo_path):
+                cliente_path = os.path.join(periodo_path, cliente)
+                metrics_file = os.path.join(cliente_path, "metrics.json")
+                if os.path.exists(metrics_file):
+                    try:
+                        with open(metrics_file, 'r', encoding='utf-8') as f:
+                            data = json.load(f)
+                            sort_key = parse_periodo(data.get("periodo", ""))
+                            data["_sort"] = sort_key
+                            data_list.append(data)
+                    except Exception:
+                        pass
+    
+    # Agregar datos actuales a la lista
+    current_data = {
+        "periodo": periodo_uso,
+        "visualizaciones": sum_visualizaciones,
+        "espectadores": sum_espectadores,
+        "interacciones": sum_interacciones,
+        "_sort": parse_periodo(periodo_uso)
+    }
+    
+    # Reemplazar el actual si ya existe en la lista histórica (por si se re-ejecuta)
+    data_list = [d for d in data_list if d["periodo"] != periodo_uso]
+    data_list.append(current_data)
+    data_list = sorted(data_list, key=lambda x: x["_sort"])
+    
+    has_comparativo = False
+    diff_vis = diff_esp = diff_int = 0
+    d_vis_cls = d_vis_icn = d_esp_cls = d_esp_icn = d_int_cls = d_int_icn = ""
+    prev_period_name = ""
+    previous = {}
+    
+    current_idx = next((i for i, d in enumerate(data_list) if d["periodo"] == periodo_uso), -1)
+    if current_idx > 0:
+        has_comparativo = True
+        previous = data_list[current_idx - 1]
+        prev_period_name = previous.get("periodo", "")
+        
+        diff_vis = calculate_mom(current_data["visualizaciones"], previous.get("visualizaciones", 0))
+        diff_esp = calculate_mom(current_data["espectadores"], previous.get("espectadores", 0))
+        diff_int = calculate_mom(current_data["interacciones"], previous.get("interacciones", 0))
+        
+        d_vis_cls, d_vis_icn = get_diff_ui(diff_vis)
+        d_esp_cls, d_esp_icn = get_diff_ui(diff_esp)
+        d_int_cls, d_int_icn = get_diff_ui(diff_int)
+    # === Fin Logica Comparativa ===
 
     template = Template(HTML_TEMPLATE)
     html_output = template.render(
@@ -771,20 +1249,47 @@ def process_folder_and_generate_report(folder_path, folder_name, base_dir, clien
         periodo=periodo_uso,
         plataforma=PLATAFORMA,
         lugar=lugar_uso,
-        reportes_data=report_data,
+        reportes_data_meta=report_data_meta,
+        reportes_data_tiktok=report_data_tiktok,
         top_posts=top_posts,
         datos_publico=datos_publico,
+        info_cliente=info_cliente,
         enumerate_top=enumerate_top,
         total_visualizaciones=format_number(sum_visualizaciones),
         total_espectadores=format_number(sum_espectadores),
-        total_interacciones=format_number(sum_interacciones)
+        total_interacciones=format_number(sum_interacciones),
+        has_comparativo=has_comparativo,
+        prev_period_name=prev_period_name,
+        diff_vis=f"{diff_vis:.1f}", d_vis_cls=d_vis_cls, d_vis_icn=d_vis_icn,
+        diff_esp=f"{diff_esp:.1f}", d_esp_cls=d_esp_cls, d_esp_icn=d_esp_icn,
+        diff_int=f"{diff_int:.1f}", d_int_cls=d_int_cls, d_int_icn=d_int_icn,
+        prev_vis=previous.get("visualizaciones", 0), curr_vis=sum_visualizaciones,
+        prev_esp=previous.get("espectadores", 0), curr_esp=sum_espectadores,
+        prev_int=previous.get("interacciones", 0), curr_int=sum_interacciones,
+        prev_period_short=prev_period_name.split(' ')[0],
+        curr_period_short=periodo_uso.split(' ')[0]
     )
 
-    report_filename = f"Reporte_{folder_name.replace(' ', '_')}_{periodo_uso.replace(' ', '_')}.html"
+    report_filename = f"Reporte_{cliente.replace(' ', '_')}_{periodo_uso.replace(' ', '_')}.html"
     report_path = os.path.join(reportes_dir, report_filename)
     
     with open(report_path, 'w', encoding='utf-8') as f:
         f.write(html_output)
+        
+    metrics_export_path = os.path.join(folder_path, "metrics.json")
+    metrics_data = {
+        "cliente": cliente,
+        "periodo": periodo_uso,
+        "total_posts": len(all_posts),
+        "visualizaciones": sum_visualizaciones,
+        "espectadores": sum_espectadores,
+        "interacciones": sum_interacciones
+    }
+    try:
+        with open(metrics_export_path, 'w', encoding='utf-8') as f:
+            json.dump(metrics_data, f, ensure_ascii=False, indent=4)
+    except Exception as e:
+        print(f"Error guardando metrics.json en {folder_path}: {e}")
         
     print(f"✅ Reporte generado y guardado en: {report_path}")
 

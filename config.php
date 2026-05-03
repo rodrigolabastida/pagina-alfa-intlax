@@ -11,7 +11,7 @@ try {
     // Obtener resultados como arrays asociativos por defecto
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    die("Error de conexión a la base de datos Bóveda ALFA: " . $e->getMessage());
+    die("Error de conexión a la base de datos: " . $e->getMessage());
 }
 
 // Iniciar sesión de manera global si no está iniciada ya

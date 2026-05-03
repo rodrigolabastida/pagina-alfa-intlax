@@ -201,11 +201,23 @@
 
 <body>
 
-    <header>
-        <a href="#" style="text-decoration:none; color:white;">
-            <h1>INTLAX<span class="highlight">.CLOUD</span></h1>
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 20px;">
+        <a href="index.html" class="logo-font" style="font-size: 1.5rem; text-decoration: none; color: white;">
+            INTLAX<span class="highlight">.CLOUD</span>
         </a>
-        <p>Estrategia de Difusión Viral 2026</p>
+        <div class="menu-btn" id="menuBtn" style="font-size: 1.8rem; color: var(--primary-yellow); cursor: pointer; z-index: 1002;">☰</div>
+
+        <!-- Navegación Oculta -->
+        <div class="nav-overlay" id="navOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(4px);"></div>
+        <nav class="nav-menu" id="navMenu" style="position: fixed; top: 0; right: -320px; width: 300px; height: 100vh; background-color: #0c0c0c; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.4s ease-in-out; z-index: 1001; border-left: 2px solid var(--primary-yellow);">
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin: 25px 0; text-align: center;"><a href="index.html" style="font-size: 1.5rem; font-family: 'Anton', sans-serif; text-transform: uppercase; color: white; text-decoration: none;">Inicio</a></li>
+                <li style="margin: 25px 0; text-align: center;"><a href="boveda.html" style="font-size: 1.5rem; font-family: 'Anton', sans-serif; text-transform: uppercase; color: var(--primary-yellow); text-decoration: none;">Bóveda Intlax</a></li>
+                <li style="margin: 25px 0; text-align: center;"><a href="nosotros.html" style="font-size: 1.5rem; font-family: 'Anton', sans-serif; text-transform: uppercase; color: white; text-decoration: none;">Nosotros</a></li>
+                <li style="margin: 25px 0; text-align: center;"><a href="index.html#servicios" style="font-size: 1.5rem; font-family: 'Anton', sans-serif; text-transform: uppercase; color: white; text-decoration: none;">Servicios</a></li>
+                <li style="margin: 25px 0; text-align: center;"><a href="login.php" style="font-size: 1.5rem; font-family: 'Anton', sans-serif; text-transform: uppercase; color: white; text-decoration: none;"><i class="fas fa-lock"></i> Login</a></li>
+            </ul>
+        </nav>
     </header>
 
     <div class="container">
@@ -358,6 +370,36 @@
         function closePreview() {
             document.getElementById('pdf-overlay').style.display = 'none';
         }
+    </script>
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const navMenu = document.getElementById('navMenu');
+        const navOverlay = document.getElementById('navOverlay');
+        const menuLinks = navMenu.querySelectorAll('a');
+
+        function toggleMenu() {
+            navMenu.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            menuBtn.innerHTML = navMenu.classList.contains('active') ? '✕' : '☰';
+            
+            // Handle inline styles for transition
+            if (navMenu.classList.contains('active')) {
+                navMenu.style.right = '0';
+                navOverlay.style.opacity = '1';
+                navOverlay.style.visibility = 'visible';
+            } else {
+                navMenu.style.right = '-320px';
+                navOverlay.style.opacity = '0';
+                navOverlay.style.visibility = 'hidden';
+            }
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+        navOverlay.addEventListener('click', toggleMenu);
+        
+        menuLinks.forEach(link => {
+            link.addEventListener('click', toggleMenu);
+        });
     </script>
 </body>
 </html>

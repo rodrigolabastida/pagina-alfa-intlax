@@ -48,9 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intlax.cloud | Acceso Bóveda</title>
+    <title>Intlax.cloud | Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
             --bg-dark: #0a0a0a;
@@ -113,16 +114,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-decoration: none; font-size: 0.85rem; transition: 0.3s;
         }
         .back-link:hover { color: var(--primary); }
+
+        .google-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 25px 0;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .google-divider::before, .google-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .google-divider:not(:empty)::before { margin-right: .5em; }
+        .google-divider:not(:empty)::after { margin-left: .5em; }
+        
+        .google-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
     <div class="login-box">
-        <h1>BÓVEDA ALFA</h1>
-        <p>Sistema de acceso inteligente.</p>
+        <h1>LOGIN</h1>
+        <p>Ingresa tus credenciales para continuar.</p>
         
         <?php if ($error): ?>
             <div class="error-msg"><i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($error) ?></div>
+            <br>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['error']) && $_GET['error'] === 'no_registrado'): ?>
+            <div class="error-msg"><i class="fas fa-user-lock"></i> Tu cuenta de Google no está registrada en este sistema.</div>
             <br>
         <?php endif; ?>
 
@@ -137,6 +165,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <button type="submit" class="btn-submit">Acceder</button>
         </form>
+
+        <div class="google-divider">O ACCEDE CON</div>
+
+        <div class="google-btn-container">
+            <div id="g_id_onload"
+                data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                data-context="signin"
+                data-ux_mode="popup"
+                data-login_uri="https://tu-dominio.com/google_auth.php"
+                data-auto_prompt="false">
+            </div>
+
+            <div class="g_id_signin"
+                data-type="standard"
+                data-shape="rectangular"
+                data-theme="filled_black"
+                data-text="signin_with"
+                data-size="large"
+                data-logo_alignment="left">
+            </div>
+        </div>
+        
+        <!-- Script para manejar la redirección del token a google_auth.php de forma tradicional POST -->
+        <script>
+            function handleCredentialResponse(response) {
+                // Crear un formulario temporal para enviar el token por POST
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'google_auth.php';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'credential';
+                input.value = response.credential;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+
+            // Sobrescribir el comportamiento por defecto para usar nuestra función si se prefiere popup
+            window.onload = function () {
+                google.accounts.id.initialize({
+                    client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+                    callback: handleCredentialResponse
+                });
+                google.accounts.id.renderButton(
+                    document.querySelector(".g_id_signin"),
+                    { theme: "filled_black", size: "large", text: "signin_with", shape: "rectangular" }
+                );
+            }
+        </script>
         
         <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Volver al sitio público</a>
     </div>

@@ -135,6 +135,49 @@
         .footer-col ul li { margin-bottom: 15px; }
         .footer-col a:hover { color: var(--yellow-accent); }
 
+        .menu-btn {
+            font-size: 1.8rem;
+            color: var(--yellow-accent);
+            cursor: pointer;
+            z-index: 1002;
+            transition: 0.3s;
+        }
+        .menu-btn:hover { color: white; }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100vh;
+            background-color: #0c0c0c;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: 0.4s ease-in-out;
+            z-index: 1001;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.9);
+            border-left: 2px solid var(--yellow-accent);
+        }
+        .nav-menu.active { right: 0; }
+        .nav-menu ul li { margin: 25px 0; text-align: center; }
+        .nav-menu ul li a {
+            font-size: 1.5rem;
+            font-family: 'Anton', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: white;
+        }
+        .nav-menu ul li a:hover { color: var(--yellow-accent); }
+        
+        .nav-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 999;
+            opacity: 0; visibility: hidden; transition: 0.3s;
+            backdrop-filter: blur(4px);
+        }
+        .nav-overlay.active { opacity: 1; visibility: visible; }
     </style>
 </head>
 <body>
@@ -143,7 +186,19 @@
         <a href="index.html" class="logo-font" style="font-size: 1.5rem;">
             INTLAX<span class="text-yellow">.CLAUD</span>
         </a>
-        <div style="font-size: 1.5rem; color: var(--yellow-accent);">☰</div>
+        <div class="menu-btn" id="menuBtn">☰</div>
+
+        <!-- Navegación Oculta -->
+        <div class="nav-overlay" id="navOverlay"></div>
+        <nav class="nav-menu" id="navMenu">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="boveda.html" class="text-yellow">Bóveda Intlax</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="index.html#servicios">Servicios</a></li>
+                <li><a href="login.php"><i class="fas fa-lock"></i> Login</a></li>
+            </ul>
+        </nav>
     </header>
 
     <section class="page-header">
@@ -243,5 +298,24 @@
         </div>
     </footer>
 
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const navMenu = document.getElementById('navMenu');
+        const navOverlay = document.getElementById('navOverlay');
+        const menuLinks = navMenu.querySelectorAll('a');
+
+        function toggleMenu() {
+            navMenu.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            menuBtn.innerHTML = navMenu.classList.contains('active') ? '✕' : '☰';
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+        navOverlay.addEventListener('click', toggleMenu);
+        
+        menuLinks.forEach(link => {
+            link.addEventListener('click', toggleMenu);
+        });
+    </script>
 </body>
 </html>

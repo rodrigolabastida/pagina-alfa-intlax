@@ -1,0 +1,7 @@
+reportes/
+Archivo_Medios/Testigos/
+Archivo_Medios/Testigos_Sin_Procesar/
+Archivo_Medios/scratch/
+.DS_Store
+*.pyc
+__pycache__/

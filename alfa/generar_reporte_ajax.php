@@ -25,7 +25,8 @@ try {
         throw new Exception("Cliente no encontrado en BD.");
     }
 
-    $folder = 'client_' . $cliente_id;
+    // Usar el nombre del cliente exacto como nombre de la carpeta
+    $folder = $cliente_nombre;
     $pythonScript = realpath(__DIR__ . '/../Archivo_Medios/generador_reportes.py');
     
     if (!$pythonScript) {

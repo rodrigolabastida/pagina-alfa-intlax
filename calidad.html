@@ -139,7 +139,19 @@
         <a href="index.html" class="logo-font" style="font-size: 1.5rem;">
             INTLAX<span class="text-yellow">.CLAUD</span>
         </a>
-        <div style="font-size: 1.5rem; color: var(--yellow-accent);">☰</div>
+        <div class="menu-btn" id="menuBtn">☰</div>
+
+        <!-- Navegación Oculta -->
+        <div class="nav-overlay" id="navOverlay"></div>
+        <nav class="nav-menu" id="navMenu">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="boveda.html" class="text-yellow">Bóveda Intlax</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="index.html#servicios">Servicios</a></li>
+                <li><a href="login.php"><i class="fas fa-lock"></i> Login</a></li>
+            </ul>
+        </nav>
     </header>
 
     <section class="page-header">
@@ -247,5 +259,24 @@
         </div>
     </footer>
 
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const navMenu = document.getElementById('navMenu');
+        const navOverlay = document.getElementById('navOverlay');
+        const menuLinks = navMenu.querySelectorAll('a');
+
+        function toggleMenu() {
+            navMenu.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            menuBtn.innerHTML = navMenu.classList.contains('active') ? '✕' : '☰';
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+        navOverlay.addEventListener('click', toggleMenu);
+        
+        menuLinks.forEach(link => {
+            link.addEventListener('click', toggleMenu);
+        });
+    </script>
 </body>
 </html>

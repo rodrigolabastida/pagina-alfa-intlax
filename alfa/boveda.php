@@ -1,3 +1,12 @@
+<?php
+require_once '../config.php';
+
+// Verificar acceso empresa
+if (!isset($_SESSION['usuario_id']) || $_SESSION['rol'] !== 'empresa') {
+    header("Location: ../login.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -144,7 +153,7 @@
 <body>
 
     <header>
-        <a href="index.html" class="logo-font" style="font-size: 1.5rem;">
+        <a href="../index.html" class="logo-font" style="font-size: 1.5rem;">
             INTLAX<span class="text-yellow">.CLAUD</span>
         </a>
         <div class="menu-btn" id="menuBtn">☰</div>
@@ -152,11 +161,11 @@
         <div class="nav-overlay" id="navOverlay"></div>
         <nav class="nav-menu" id="navMenu">
             <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="boveda.html" class="text-yellow">Bóveda Intlax</a></li>
-                <li><a href="nosotros.html">Nosotros</a></li>
-                <li><a href="index.html#servicios">Servicios</a></li>
-                <li><a href="login.php"><i class="fas fa-lock"></i> Login</a></li>
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="dashboard.php">Panel Control</a></li>
+                <li><a href="boveda.php" class="text-yellow">Bóveda Intlax</a></li>
+                <li><a href="../nosotros.html">Nosotros</a></li>
+                <li><a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Salir</a></li>
             </ul>
         </nav>
     </header>
@@ -184,7 +193,7 @@
                 <div class="client-info">
                     Métricas de impacto social, difusión de obra pública y gestión de crisis en redes sociales.
                 </div>
-                <a href="reportes/Abril/Reporte_Calpulalpan_Abril_2026.html" class="report-btn">Ver Último Reporte</a>
+                <a href="../reportes/Abril/Reporte_Calpulalpan_Abril_2026.html" class="report-btn">Ver Último Reporte</a>
             </div>
 
             <!-- Ana Lilia Rivera -->
@@ -199,7 +208,7 @@
                 <div class="client-info">
                     Reporte de alcance legislativo, interacción ciudadana y posicionamiento de agenda nacional.
                 </div>
-                <a href="reportes/Abril/Reporte_Ana_Lilia_Rivera_Abril_2026.html" class="report-btn">Ver Último Reporte</a>
+                <a href="../reportes/Abril/Reporte_Ana_Lilia_Rivera_Abril_2026.html" class="report-btn">Ver Último Reporte</a>
             </div>
 
             <!-- Españita -->
@@ -235,7 +244,7 @@
                 <div class="client-info">
                     Métricas de marca personal, engagement y crecimiento de audiencia en plataformas Meta y TikTok.
                 </div>
-                <a href="reportes/Abril/Reporte_Laura_Flores_Abril_2026.html" class="report-btn">Ver Último Reporte</a>
+                <a href="../reportes/Abril/Reporte_Laura_Flores_Abril_2026.html" class="report-btn">Ver Último Reporte</a>
             </div>
 
             <!-- Ruben Becerra -->

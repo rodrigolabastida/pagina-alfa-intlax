@@ -84,6 +84,7 @@ foreach($reportes as $r) {
                 <div class="logo-font">INTLAX<span>.CLOUD</span> ALFA</div>
                 <div>
                     <a href="clientes.php" class="action-btn" style="margin-right: 10px;"><i class="fas fa-users"></i> Gestor de Clientes</a>
+                    <a href="boveda.php" class="action-btn" style="margin-right: 10px;"><i class="fas fa-vault"></i> Bóveda</a>
                     <a href="../logout.php" class="action-btn logout-btn">Cerrar Sesión <i class="fas fa-sign-out-alt"></i></a>
                 </div>
             </header>

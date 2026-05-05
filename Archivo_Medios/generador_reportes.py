@@ -218,65 +218,80 @@ HTML_TEMPLATE = """
         /* --- MEDIA PRINT (TEMA CLARO EXCLUSIVO DE PDF Y AHORRO) --- */
         /* ============================================================== */
         @media print {
-            /* Estabilización de Saltos de Página (Evita recortes de imágenes) */
-            header, .section-box, .card, .summary-card, .mom-card, .metric-row {
-                break-inside: avoid !important;
+            /* Forzar colores exactos en PDF */
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            
+            body { background-color: #ffffff !important; color: #000000 !important; font-size: 10pt; }
+            .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }
+            .content-wrap { padding: 0 !important; }
+            .print-btn { display: none !important; }
+
+            /* Estabilización de Saltos de Página */
+            header, .summary-card, .mom-card, .card, .metric-row {
                 page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                display: block !important;
                 position: relative !important;
-                display: block !important; /* Forzar bloque para evitar fallos de grid/flex en impresión */
-                overflow: visible !important;
             }
 
-            img { 
-                max-width: 100% !important; 
-                height: auto !important;
+            /* Forzar que la galería de fotos empiece en hoja nueva si es muy extensa */
+            .section-box:last-of-type { page-break-before: always !important; }
+
+            /* Portada Ligera */
+            header { background: #fff !important; border: 1px solid #ddd !important; padding: 20px !important; margin-bottom: 20px !important; }
+            header::before { background: var(--accent) !important; height: 6px !important; }
+            
+            /* Secciones Interiores */
+            .section-box { background: #fff !important; border: 1px solid #ddd !important; padding: 20px !important; margin-bottom: 25px !important; break-inside: auto !important; }
+            h2.section-title { font-size: 14pt !important; border-bottom: 2px solid #eee !important; color: #000 !important; margin-bottom: 15px !important; padding-bottom: 5px !important; }
+            
+            /* Distribución de Bloques (Flexbox Controlado) */
+            .summary-grid, .mom-grid, .gallery-grid, .anexos-grid {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 15px !important;
+                justify-content: flex-start !important;
+                background: transparent !important;
+            }
+
+            .summary-card, .mom-card {
+                width: calc(33.33% - 15px) !important;
+                flex: 0 0 auto !important;
+            }
+
+            .card {
+                width: 100% !important;
+                flex: 0 0 100% !important;
+                margin-bottom: 25px !important;
+                background: #fff !important;
+                border: 1px solid #eee !important;
                 display: block !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
             }
 
-            h1, h2, h3, h4 { page-break-after: avoid !important; break-after: avoid !important; }
-            
-            body { background-color: #ffffff !important; color: #000000 !important; font-size: 10pt; orphans: 3; widows: 3; }
-            .content-wrap { padding: 0 !important; }
-            .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }
-            .print-btn { display: none !important; }
-            
-            /* Portada Ligera */
-            header { background: #fff !important; box-shadow: none !important; border: 1px solid #ddd !important; padding: 20px !important; margin-bottom: 15px !important; }
-            header::before { background: var(--accent) !important; height: 6px !important; }
-            
-            /* Secciones Interiores */
-            .section-box { background: #fff !important; border: 1px solid #ddd !important; padding: 15px !important; margin-bottom: 20px !important; page-break-inside: auto !important; }
-            h2.section-title { font-size: 14pt !important; border-bottom: 2px solid #eee !important; color: #000 !important; margin-bottom: 15px !important; padding-bottom: 5px !important; }
-            
-            /* Grid de resumen numérico (Convertido a Columnas de bloque para impresión) */
-            .summary-grid { display: block !important; }
-            .summary-card { width: 31% !important; display: inline-block !important; vertical-align: top; margin: 1%; background: #fefefe !important; border: 1px solid #ddd !important; }
-            
-            /* Anexos: Layout de 4 columnas usando inline-block (Más estable que grid en PDF) */
-            .anexos-grid, .gallery-grid { display: block !important; width: 100% !important; }
-            .anexos-grid .card, .gallery-grid .card { 
-                width: 48% !important; /* 2 columnas por fila en impresión es más legible */
-                display: inline-block !important; 
-                vertical-align: top; 
-                margin: 0.5% !important;
+            .card-img-wrapper { 
+                height: auto !important; 
+                min-height: 300px !important; 
                 background: #fff !important; 
-                border: 1px solid #ddd !important;
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-                margin-bottom: 15px !important;
+                padding: 15px !important;
+            }
+            .card img { 
+                width: 100% !important;
+                max-width: 1200px !important;
+                height: auto !important; 
+                display: block !important; 
+                margin: 0 auto !important;
             }
 
-            .card-img-wrapper { background: #fff !important; height: 180px !important; padding: 2px !important; border-bottom: 1px solid #eee !important; }
-            .metrics-container { background: #fafafa !important; padding: 10px !important; }
-            .metric-row { border-bottom: 1px dotted #ccc !important; padding: 4px 0 !important; display: flex !important; flex-direction: row !important; justify-content: space-between !important; }
+            .metrics-container { background: #fcfcfc !important; border-top: 1px solid #eee !important; }
+            .metric-row { display: flex !important; flex-direction: row !important; justify-content: space-between !important; border-bottom: 1px dotted #ccc !important; padding: 5px 0 !important; }
             
             /* Footer */
-            footer { background: #fff !important; border-top: 2px solid #000 !important; padding: 15px 0 10px !important; margin-top: 15px !important; }
-            .footer-grid { display: block !important; }
-            .footer-col { width: 31% !important; display: inline-block !important; vertical-align: top; }
-            .container > p { color: #555 !important; border-top: none !important; margin-top: 0 !important; padding-top: 0 !important; }
+            footer { background: #fff !important; border-top: 2px solid #000 !important; padding: 20px 0 !important; }
+            .footer-grid { display: flex !important; justify-content: space-between !important; }
+            .footer-col { width: 30% !important; }
+            .text-accent, .text-yellow { color: #ca8a04 !important; }
         }
     </style>
 </head>

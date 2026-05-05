@@ -257,60 +257,78 @@ HTML_TEMPLATE = """
                 overflow: hidden !important;
             }
 
-            /* ESPACIAMIENTO AMPLIO Y SALTOS DE PÁGINA FORZADOS */
-            .section-box {
-                page-break-before: auto !important; /* Permitir que fluyan juntas */
-                background: #fff !important;
-                border: none !important;
-                padding: 0 !important;
-                margin-bottom: 30px !important;
-            }
+            /* DISEÑO COMPACTO EJECUTIVO */
+            body { font-size: 8.5pt !important; line-height: 1.2 !important; }
+            .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
             
-            /* Solo la Galería inicia en hoja nueva */
-            #seccion-testigos { page-break-before: always !important; }
-
-            /* Reajuste de textos para que quepan en 3 columnas */
-            .summary-card .value { font-size: 14pt !important; }
-            .summary-card .label { font-size: 8pt !important; }
-            .post-title-extract { font-size: 7.5pt !important; height: 2.6em !important; }
-
-            /* Galería 2x2 (4 por página) */
-            .gallery-grid {
-                display: block !important;
-                width: 100% !important;
-                text-align: center !important;
-            }
-
-            .gallery-grid .card {
-                width: 47% !important;
-                display: inline-block !important;
-                vertical-align: top !important;
-                margin: 1% !important;
-                margin-bottom: 20px !important;
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-                border: 1px solid #ddd !important;
-                background: #fff !important;
-                text-align: left !important;
-            }
-
-            .card-img-wrapper { 
-                height: auto !important;
-                max-height: 11cm !important; /* Ajuste para que quepan 4 por página (2x2) */
-                overflow: hidden !important;
-                display: block !important;
+            .section-box {
+                page-break-before: auto !important;
+                margin-bottom: 15px !important;
                 padding: 10px !important;
                 border-bottom: 1px solid #eee !important;
             }
             
+            #seccion-testigos { page-break-before: always !important; padding-top: 0 !important; }
+            .section-title { font-size: 11pt !important; margin-bottom: 8px !important; padding-bottom: 3px !important; }
+
+            /* Métricas y Top 3 en 3 columnas compactas */
+            .summary-grid, .mom-grid, .anexos-grid:first-of-type, .demograficos-grid {
+                display: flex !important;
+                flex-wrap: nowrap !important;
+                gap: 8px !important;
+                margin-bottom: 10px !important;
+            }
+
+            .summary-card, .mom-card, .anexos-grid:first-of-type .card, .demograficos-grid > div {
+                flex: 1 !important;
+                padding: 6px !important;
+                border: 1px solid #ddd !important;
+                background: #fff !important;
+            }
+
+            .summary-card .value { font-size: 12pt !important; }
+            .summary-card .label { font-size: 7pt !important; }
+            .post-title-extract { font-size: 7pt !important; height: 2.2em !important; margin-bottom: 3px !important; }
+
+            /* Galería 2x2 Estricta (4 por página) */
+            .gallery-grid {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 10px !important;
+                justify-content: space-between !important;
+            }
+
+            .gallery-grid .card {
+                width: 48% !important;
+                margin-bottom: 12px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                border: 1px solid #eee !important;
+                display: block !important;
+            }
+
+            .card-img-wrapper { 
+                height: auto !important;
+                max-height: 9.5cm !important; /* Altura crítica para que quepan 4 (2x2) */
+                overflow: hidden !important;
+                padding: 4px !important;
+                border-bottom: 1px solid #eee !important;
+            }
+            
             .card img { 
-                width: auto !important;
                 max-width: 100% !important;
-                height: auto !important; 
                 max-height: 100% !important;
+                width: auto !important;
+                height: auto !important;
                 display: block !important;
                 margin: 0 auto !important;
             }
+
+            .metrics-container { padding: 5px !important; }
+            .metric-row { padding: 2px 0 !important; font-size: 7pt !important; border-bottom: 1px dotted #ccc !important; }
+            
+            footer { margin-top: 10px !important; padding-top: 5px !important; border-top: 1px solid #eee !important; }
+            .footer-col { font-size: 7pt !important; }
 
             .metrics-container { 
                 border-top: 1px solid #eee !important; 

@@ -259,46 +259,55 @@ HTML_TEMPLATE = """
 
             /* ESPACIAMIENTO AMPLIO Y SALTOS DE PÁGINA FORZADOS */
             .section-box {
-                page-break-before: always !important; /* Cada sección principal inicia en hoja nueva */
+                page-break-before: auto !important; /* Permitir que fluyan juntas */
                 background: #fff !important;
                 border: none !important;
                 padding: 0 !important;
-                margin-bottom: 50px !important;
+                margin-bottom: 30px !important;
             }
-            .section-box:first-of-type { page-break-before: auto !important; } /* Menos la primera */
+            
+            /* Solo la Galería inicia en hoja nueva */
+            #seccion-testigos { page-break-before: always !important; }
 
             /* Reajuste de textos para que quepan en 3 columnas */
             .summary-card .value { font-size: 14pt !important; }
             .summary-card .label { font-size: 8pt !important; }
             .post-title-extract { font-size: 7.5pt !important; height: 2.6em !important; }
 
-            /* Galería Dossier (1 por fila para 0 recortes) */
+            /* Galería 2x2 (4 por página) */
             .gallery-grid {
                 display: block !important;
                 width: 100% !important;
+                text-align: center !important;
             }
 
             .gallery-grid .card {
-                width: 100% !important;
-                display: block !important;
-                margin-bottom: 50px !important; /* Mucho espacio en blanco entre testigos */
+                width: 47% !important;
+                display: inline-block !important;
+                vertical-align: top !important;
+                margin: 1% !important;
+                margin-bottom: 20px !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
-                border: 1px solid #eee !important;
+                border: 1px solid #ddd !important;
+                background: #fff !important;
+                text-align: left !important;
             }
 
             .card-img-wrapper { 
                 height: auto !important;
-                max-height: none !important; /* Dejar que ocupe lo que necesite */
-                overflow: visible !important;
+                max-height: 11cm !important; /* Ajuste para que quepan 4 por página (2x2) */
+                overflow: hidden !important;
                 display: block !important;
-                padding: 20px !important;
+                padding: 10px !important;
+                border-bottom: 1px solid #eee !important;
             }
             
             .card img { 
-                width: 100% !important;
+                width: auto !important;
                 max-width: 100% !important;
                 height: auto !important; 
+                max-height: 100% !important;
                 display: block !important;
                 margin: 0 auto !important;
             }
@@ -505,18 +514,8 @@ HTML_TEMPLATE = """
     </div>
     {% endif %}
 
-    <!-- GLOSARIO DE TÉRMINOS -->
-    <div class="section-box">
-        <h2 class="section-title"><i class="fas fa-book fa-yellow"></i> Glosario de Plataforma</h2>
-        <ul class="glossary-list">
-            <li><strong>Visualizaciones:</strong> Veces que la publicación apareció en la pantalla de un seguidor.</li>
-            <li><strong>Espectadores:</strong> Cantidad de personas únicas reales comprobadas por el visor de Meta.</li>
-            <li><strong>Interacciones:</strong> Total de clics, likes o comentarios generados durante el periodo activo.</li>
-        </ul>
-    </div>
-
     <!-- ANEXOS TESTIGOS -->
-    <div class="section-box" style="margin-bottom: 0;">
+    <div class="section-box" id="seccion-testigos" style="margin-bottom: 0;">
         <h2 class="section-title"><i class="fas fa-camera fa-yellow"></i> Expediente Fotográfico de Evidencias</h2>
         {% if reportes_data_meta or reportes_data_tiktok %}
         

@@ -218,80 +218,68 @@ HTML_TEMPLATE = """
         /* --- MEDIA PRINT (TEMA CLARO EXCLUSIVO DE PDF Y AHORRO) --- */
         /* ============================================================== */
         @media print {
-            /* Forzar colores exactos en PDF */
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            
-            body { background-color: #ffffff !important; color: #000000 !important; font-size: 10pt; }
+            body { background-color: #ffffff !important; color: #000000 !important; font-size: 9pt; }
             .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }
-            .content-wrap { padding: 0 !important; }
             .print-btn { display: none !important; }
 
             /* Estabilización de Saltos de Página */
-            header, .summary-card, .mom-card, .card, .metric-row {
+            .section-box, .card, .summary-card, .mom-card {
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
                 display: block !important;
-                position: relative !important;
+                margin-bottom: 15px !important;
             }
-
-            /* Forzar que la galería de fotos empiece en hoja nueva si es muy extensa */
-            .section-box:last-of-type { page-break-before: always !important; }
 
             /* Portada Ligera */
-            header { background: #fff !important; border: 1px solid #ddd !important; padding: 20px !important; margin-bottom: 20px !important; }
-            header::before { background: var(--accent) !important; height: 6px !important; }
+            header { background: #fff !important; border: 1px solid #ddd !important; padding: 15px !important; margin-bottom: 20px !important; }
+            header::before { background: var(--accent) !important; height: 4px !important; }
+            .main-title { font-size: 18pt !important; }
             
-            /* Secciones Interiores */
-            .section-box { background: #fff !important; border: 1px solid #ddd !important; padding: 20px !important; margin-bottom: 25px !important; break-inside: auto !important; }
-            h2.section-title { font-size: 14pt !important; border-bottom: 2px solid #eee !important; color: #000 !important; margin-bottom: 15px !important; padding-bottom: 5px !important; }
-            
-            /* Distribución de Bloques (Flexbox Controlado) */
-            .summary-grid, .mom-grid, .gallery-grid, .anexos-grid {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                gap: 15px !important;
-                justify-content: flex-start !important;
-                background: transparent !important;
-            }
-
-            .summary-card, .mom-card {
-                width: calc(33.33% - 15px) !important;
-                flex: 0 0 auto !important;
+            /* Distribución en 2 Columnas (Estable para PDF) */
+            .gallery-grid, .anexos-grid {
+                display: block !important;
+                width: 100% !important;
+                clear: both !important;
             }
 
             .card {
-                width: 100% !important;
-                flex: 0 0 100% !important;
-                margin-bottom: 25px !important;
-                background: #fff !important;
+                width: 48% !important;
+                display: inline-block !important;
+                vertical-align: top;
+                margin: 0.8% !important;
                 border: 1px solid #eee !important;
-                display: block !important;
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
+                background: #fff !important;
             }
 
+            /* LIMITAR ALTURA DE IMAGEN (Crucial para no cortar) */
             .card-img-wrapper { 
-                height: auto !important; 
-                min-height: 300px !important; 
-                background: #fff !important; 
-                padding: 15px !important;
+                height: auto !important;
+                max-height: 18cm !important; /* Evita que la foto sea más alta que la hoja */
+                overflow: hidden !important;
+                background: #fff !important;
+                padding: 5px !important;
+                display: flex !important;
+                align-items: flex-start !important;
             }
             .card img { 
                 width: 100% !important;
-                max-width: 1200px !important;
                 height: auto !important; 
-                display: block !important; 
-                margin: 0 auto !important;
+                object-fit: contain !important;
             }
 
-            .metrics-container { background: #fcfcfc !important; border-top: 1px solid #eee !important; }
-            .metric-row { display: flex !important; flex-direction: row !important; justify-content: space-between !important; border-bottom: 1px dotted #ccc !important; padding: 5px 0 !important; }
+            .metrics-container { background: #f9f9f9 !important; padding: 8px !important; border-top: 1px solid #eee !important; }
+            .metric-row { display: flex !important; justify-content: space-between !important; font-size: 8pt !important; padding: 3px 0 !important; border-bottom: 1px dotted #ccc !important; }
+            .post-title-extract { font-size: 8pt !important; height: auto !important; max-height: 3em !important; margin-bottom: 5px !important; }
             
+            /* Resumen Numérico */
+            .summary-grid { display: block !important; }
+            .summary-card { width: 31% !important; display: inline-block !important; margin: 1% !important; }
+
             /* Footer */
-            footer { background: #fff !important; border-top: 2px solid #000 !important; padding: 20px 0 !important; }
+            footer { background: #fff !important; border-top: 1px solid #000 !important; padding: 10px 0 !important; }
             .footer-grid { display: flex !important; justify-content: space-between !important; }
-            .footer-col { width: 30% !important; }
-            .text-accent, .text-yellow { color: #ca8a04 !important; }
+            .footer-col { width: 30% !important; font-size: 8pt !important; }
         }
     </style>
 </head>

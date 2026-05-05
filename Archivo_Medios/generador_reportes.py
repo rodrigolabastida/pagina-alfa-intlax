@@ -237,8 +237,8 @@ HTML_TEMPLATE = """
             .print-btn { display: none !important; }
             header::before { background: #ca8a04 !important; height: 4px !important; }
 
-            /* SECCIONES HORIZONTALES ESTRICTAS (Top 3 y Resumen) */
-            .summary-grid, .mom-grid, .anexos-grid:first-of-type {
+            /* SECCIONES HORIZONTALES ESTRICTAS (Top 3, Resumen y Demografía) */
+            .summary-grid, .mom-grid, .anexos-grid:first-of-type, .demograficos-grid {
                 display: flex !important;
                 flex-direction: row !important;
                 flex-wrap: nowrap !important; /* Prohibir el salto de línea */
@@ -247,7 +247,7 @@ HTML_TEMPLATE = """
                 width: 100% !important;
             }
 
-            .summary-card, .mom-card, .anexos-grid:first-of-type .card {
+            .summary-card, .mom-card, .anexos-grid:first-of-type .card, .demograficos-grid > div {
                 width: 31% !important;
                 flex: 1 !important; /* Forzar que compartan el espacio por igual */
                 display: block !important;
@@ -431,7 +431,7 @@ HTML_TEMPLATE = """
     <div class="section-box">
         <h2 class="section-title"><i class="fas fa-users fa-yellow"></i> Demografía y Alcance Geográfico</h2>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div class="demograficos-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
             <!-- Países -->
             <div style="background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color);">
                 <h4 style="margin-bottom: 15px; color: var(--text-primary); font-size: 0.95rem;">Distribución Continental (América)</h4>

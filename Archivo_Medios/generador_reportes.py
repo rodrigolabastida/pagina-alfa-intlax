@@ -290,17 +290,17 @@ HTML_TEMPLATE = """
             .summary-card .label { font-size: 7pt !important; }
             .post-title-extract { font-size: 7pt !important; height: 2.2em !important; margin-bottom: 3px !important; }
 
-            /* Galería 2x2 Estricta (4 por página) */
+            /* Galería Ultra-Compacta 3x2 (6 por página) */
             .gallery-grid {
                 display: flex !important;
                 flex-wrap: wrap !important;
-                gap: 10px !important;
-                justify-content: space-between !important;
+                gap: 8px !important;
+                justify-content: flex-start !important;
             }
 
             .gallery-grid .card {
-                width: 48% !important;
-                margin-bottom: 12px !important;
+                width: 32% !important; /* 3 por fila */
+                margin-bottom: 10px !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
                 border: 1px solid #eee !important;
@@ -309,9 +309,9 @@ HTML_TEMPLATE = """
 
             .card-img-wrapper { 
                 height: auto !important;
-                max-height: 9.5cm !important; /* Altura crítica para que quepan 4 (2x2) */
+                max-height: 7.5cm !important; /* Altura para que quepan 2 filas de 3 (Total 6) */
                 overflow: hidden !important;
-                padding: 4px !important;
+                padding: 3px !important;
                 border-bottom: 1px solid #eee !important;
             }
             
@@ -324,11 +324,12 @@ HTML_TEMPLATE = """
                 margin: 0 auto !important;
             }
 
-            .metrics-container { padding: 5px !important; }
-            .metric-row { padding: 2px 0 !important; font-size: 7pt !important; border-bottom: 1px dotted #ccc !important; }
+            .metrics-container { padding: 4px !important; }
+            .metric-row { padding: 1px 0 !important; font-size: 6.5pt !important; border-bottom: 1px dotted #ccc !important; }
+            .post-title-extract { font-size: 6.5pt !important; height: 2.1em !important; margin-bottom: 2px !important; }
             
-            footer { margin-top: 10px !important; padding-top: 5px !important; border-top: 1px solid #eee !important; }
-            .footer-col { font-size: 7pt !important; }
+            footer { margin-top: 5px !important; padding-top: 2px !important; border-top: 1px solid #eee !important; }
+            .footer-col { font-size: 6.5pt !important; }
 
             .metrics-container { 
                 border-top: 1px solid #eee !important; 

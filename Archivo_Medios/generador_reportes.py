@@ -237,29 +237,42 @@ HTML_TEMPLATE = """
             .print-btn { display: none !important; }
             header::before { background: #ca8a04 !important; height: 4px !important; }
 
-            /* SECCIONES HORIZONTALES (Top 3 y Métricas) */
-            .summary-grid, .anexos-grid, .mom-grid, .gallery-grid {
-                display: block !important;
+            /* SECCIONES HORIZONTALES ESTRICTAS (Top 3 y Resumen) */
+            .summary-grid, .mom-grid, .anexos-grid:first-of-type {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important; /* Prohibir el salto de línea */
+                justify-content: space-between !important;
+                gap: 10px !important;
                 width: 100% !important;
-                clear: both !important;
             }
 
-            /* 3 Objetos en formato horizontal (Resumen y Top 3) */
-            .summary-card, .mom-card, .anexos-grid .card {
-                width: 32% !important;
-                display: inline-block !important;
-                vertical-align: top;
-                margin: 0.5% !important;
+            .summary-card, .mom-card, .anexos-grid:first-of-type .card {
+                width: 31% !important;
+                flex: 1 !important; /* Forzar que compartan el espacio por igual */
+                display: block !important;
+                margin: 0 !important;
+                padding: 8px !important;
                 border: 1px solid #ddd !important;
-                padding: 10px !important;
+                overflow: hidden !important;
             }
 
-            /* Galería de Evidencias (2 columnas para que se vean bien las capturas) */
+            /* Reajuste de textos para que quepan en 3 columnas */
+            .summary-card .value { font-size: 14pt !important; }
+            .summary-card .label { font-size: 8pt !important; }
+            .post-title-extract { font-size: 7.5pt !important; height: 2.6em !important; }
+
+            /* Galería de Evidencias (2 columnas para legibilidad) */
+            .gallery-grid {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 15px !important;
+                justify-content: space-between !important;
+            }
+
             .gallery-grid .card {
-                width: 48% !important;
-                display: inline-block !important;
-                vertical-align: top;
-                margin: 0.8% !important;
+                width: calc(50% - 10px) !important;
+                margin: 0 !important;
                 border: 1px solid #eee !important;
             }
 

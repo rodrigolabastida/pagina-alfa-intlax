@@ -273,7 +273,11 @@ HTML_TEMPLATE = """
             .gallery-grid .card {
                 width: calc(50% - 10px) !important;
                 margin: 0 !important;
+                margin-bottom: 20px !important;
                 border: 1px solid #eee !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                display: block !important;
             }
 
             .card-img-wrapper { 

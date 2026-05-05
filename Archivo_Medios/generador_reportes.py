@@ -273,7 +273,7 @@ HTML_TEMPLATE = """
             .gallery-grid .card {
                 width: calc(50% - 10px) !important;
                 margin: 0 !important;
-                margin-bottom: 20px !important;
+                margin-bottom: 25px !important;
                 border: 1px solid #eee !important;
                 break-inside: avoid !important;
                 page-break-inside: avoid !important;
@@ -282,13 +282,12 @@ HTML_TEMPLATE = """
 
             .card-img-wrapper { 
                 height: auto !important;
-                max-height: 16cm !important;
-                overflow: hidden !important;
+                max-height: 20cm !important;
+                overflow: visible !important; /* Evitar que oculte las métricas si hay un error de cálculo */
                 border-bottom: 1px solid #eee !important;
-                display: flex !important;
-                align-items: center;
-                justify-content: center;
+                display: block !important;
                 padding: 0 !important;
+                break-inside: avoid !important;
             }
             
             .card img { 
@@ -296,10 +295,24 @@ HTML_TEMPLATE = """
                 max-width: 100% !important;
                 height: auto !important; 
                 max-height: 100% !important;
+                display: block !important;
+                margin: 0 auto !important;
             }
 
-            .metrics-container { border-top: 1px solid #eee !important; padding: 5px !important; }
-            .metric-row { border-bottom: 1px dotted #ccc !important; padding: 2px 0 !important; }
+            .metrics-container { 
+                border-top: 1px solid #eee !important; 
+                padding: 10px !important;
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                display: block !important;
+            }
+            .metric-row { 
+                border-bottom: 1px dotted #ccc !important; 
+                padding: 4px 0 !important;
+                break-inside: avoid !important;
+                display: flex !important;
+                justify-content: space-between !important;
+            }
             .post-title-extract { font-size: 8pt !important; border-bottom: 1px solid #eee !important; }
             
             /* Bordes de Podio (Top 3) */

@@ -219,68 +219,64 @@ HTML_TEMPLATE = """
         /* ============================================================== */
         @media print {
             /* Estabilización de Saltos de Página (Evita recortes de imágenes) */
-            header, .section-box, .card, .summary-card, .mom-card {
+            header, .section-box, .card, .summary-card, .mom-card, .metric-row {
                 break-inside: avoid !important;
                 page-break-inside: avoid !important;
+                position: relative !important;
+                display: block !important; /* Forzar bloque para evitar fallos de grid/flex en impresión */
+                overflow: visible !important;
             }
+
             img { 
                 max-width: 100% !important; 
+                height: auto !important;
                 display: block !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
             }
-            h1, h2, h3 { page-break-after: avoid !important; break-after: avoid !important; }
+
+            h1, h2, h3, h4 { page-break-after: avoid !important; break-after: avoid !important; }
             
             body { background-color: #ffffff !important; color: #000000 !important; font-size: 10pt; orphans: 3; widows: 3; }
             .content-wrap { padding: 0 !important; }
-            .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+            .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }
             .print-btn { display: none !important; }
             
             /* Portada Ligera */
             header { background: #fff !important; box-shadow: none !important; border: 1px solid #ddd !important; padding: 20px !important; margin-bottom: 15px !important; }
             header::before { background: var(--accent) !important; height: 6px !important; }
-            .main-title { font-size: 20pt !important; color: #000 !important; margin-bottom: 10px !important; }
-            .subtitle { font-size: 14pt !important; color: #444 !important; }
-            .details-badge { background: #f0f0f0 !important; border: 1px solid #ccc !important; padding: 5px 10px !important; }
-            .details-badge span, .details-badge strong { color: #000 !important; }
             
             /* Secciones Interiores */
-            .section-box { background: #fff !important; border: 1px solid #ddd !important; padding: 15px !important; margin-bottom: 15px !important; }
+            .section-box { background: #fff !important; border: 1px solid #ddd !important; padding: 15px !important; margin-bottom: 20px !important; page-break-inside: auto !important; }
             h2.section-title { font-size: 14pt !important; border-bottom: 2px solid #eee !important; color: #000 !important; margin-bottom: 15px !important; padding-bottom: 5px !important; }
             
-            /* Cajas de resumen numérico sin fondos oscuros */
-            .summary-card { background: #fefefe !important; border: 1px solid #ddd !important; box-shadow: none !important; padding: 10px !important; }
-            .summary-card .value { color: #000 !important; font-size: 16pt !important; }
-            .summary-card .label { color: #222 !important; }
+            /* Grid de resumen numérico (Convertido a Columnas de bloque para impresión) */
+            .summary-grid { display: block !important; }
+            .summary-card { width: 31% !important; display: inline-block !important; vertical-align: top; margin: 1%; background: #fefefe !important; border: 1px solid #ddd !important; }
             
-            /* Anexos: Multi-columna, fotos miniatura, sin cajas oscuras */
-            .anexos-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 10px !important; }
-            .anexos-grid .card { background: #fff !important; border: 1px solid #ddd !important; box-shadow: none !important; margin-bottom: 0 !important; }
-            .card-img-wrapper { background: #fff !important; height: 120px !important; padding: 2px !important; border-bottom: 1px solid #eee !important; }
+            /* Anexos: Layout de 4 columnas usando inline-block (Más estable que grid en PDF) */
+            .anexos-grid, .gallery-grid { display: block !important; width: 100% !important; }
+            .anexos-grid .card, .gallery-grid .card { 
+                width: 48% !important; /* 2 columnas por fila en impresión es más legible */
+                display: inline-block !important; 
+                vertical-align: top; 
+                margin: 0.5% !important;
+                background: #fff !important; 
+                border: 1px solid #ddd !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                margin-bottom: 15px !important;
+            }
+
+            .card-img-wrapper { background: #fff !important; height: 180px !important; padding: 2px !important; border-bottom: 1px solid #eee !important; }
             .metrics-container { background: #fafafa !important; padding: 10px !important; }
-            .metric-row { border-bottom: 1px dotted #ccc !important; padding: 4px 0 !important; }
-            .metric-label { color: #333 !important; font-size: 8pt !important; }
-            .metric-value { color: #000 !important; font-size: 9pt !important; }
-            .post-title-extract { color: #000 !important; font-size: 8pt !important; border-bottom: 1px solid #ccc !important; padding-bottom: 5px !important; margin-bottom: 5px !important; }
+            .metric-row { border-bottom: 1px dotted #ccc !important; padding: 4px 0 !important; display: flex !important; flex-direction: row !important; justify-content: space-between !important; }
             
-            /* El Podio: colores de bordes reajustados para papel */
-            .card[style*="border: 2px solid var(--accent)"], .card[style*="border: 2px solid #FFD700"] { border: 2px solid var(--accent) !important; }
-            .card[style*="border: 2px solid #94a3b8"], .card[style*="border: 2px solid #C0C0C0"] { border: 2px solid #666 !important; }
-            .card[style*="border: 2px solid #b45309"], .card[style*="border: 2px solid #CD7F32"] { border: 2px solid #b45309 !important; }
-            
-            /* Demografía adaptada a hoja blanca */
-            .section-box > div[style*="grid-template-columns"] { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 15px !important; }
-            .section-box > div > div { background: #fff !important; border: 1px solid #ddd !important; box-shadow: none !important; }
-            .section-box > div > div h4 { color: #000 !important; font-size: 10pt !important; }
-            
-            /* Footer impreso en Blanco para no gastar cartucho negro, ni ocupar mucho espacio */
+            /* Footer */
             footer { background: #fff !important; border-top: 2px solid #000 !important; padding: 15px 0 10px !important; margin-top: 15px !important; }
-            .footer-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 15px !important; margin-bottom: 10px !important; }
-            .footer-col h4, .footer-col p, .footer-col a, .footer-col span { color: #000 !important; }
-            .footer-col h4 { border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; font-size: 10pt !important; }
-            .footer-col ul li { line-height: 1.2 !important; margin-bottom: 5px !important; font-size: 8pt !important; }
+            .footer-grid { display: block !important; }
+            .footer-col { width: 31% !important; display: inline-block !important; vertical-align: top; }
             .container > p { color: #555 !important; border-top: none !important; margin-top: 0 !important; padding-top: 0 !important; }
-            .text-accent, .text-yellow { color: var(--accent) !important; }
         }
     </style>
 </head>

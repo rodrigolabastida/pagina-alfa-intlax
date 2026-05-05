@@ -217,17 +217,20 @@ HTML_TEMPLATE = """
         /* ============================================================== */
         /* --- MEDIA PRINT (TEMA CLARO EXCLUSIVO DE PDF Y AHORRO) --- */
         /* ============================================================== */
-        @media print {
-            :root {
-                --bg-base: #ffffff;
-                --bg-surface: #ffffff;
-                --bg-card: #f8fafc;
-                --text-primary: #000000;
-                --text-secondary: #333333;
-                --accent: #ca8a04; /* Oro oscuro para papel blanco */
-                --border-color: #cccccc;
+            /* Estabilización de Saltos de Página (Evita recortes de imágenes) */
+            header, .section-box, .card, .summary-card, .mom-card {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
             }
-            body { background-color: #ffffff !important; color: #000000 !important; font-size: 10pt; }
+            img { 
+                max-width: 100% !important; 
+                display: block !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            h1, h2, h3 { page-break-after: avoid !important; break-after: avoid !important; }
+            
+            body { background-color: #ffffff !important; color: #000000 !important; font-size: 10pt; orphans: 3; widows: 3; }
             .content-wrap { padding: 0 !important; }
             .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
             .print-btn { display: none !important; }
@@ -239,9 +242,9 @@ HTML_TEMPLATE = """
             .subtitle { font-size: 14pt !important; color: #444 !important; }
             .details-badge { background: #f0f0f0 !important; border: 1px solid #ccc !important; padding: 5px 10px !important; }
             .details-badge span, .details-badge strong { color: #000 !important; }
-
+            
             /* Secciones Interiores */
-            .section-box { background: #fff !important; border: 1px solid #ddd !important; padding: 15px !important; margin-bottom: 15px !important; page-break-inside: avoid; }
+            .section-box { background: #fff !important; border: 1px solid #ddd !important; padding: 15px !important; margin-bottom: 15px !important; }
             h2.section-title { font-size: 14pt !important; border-bottom: 2px solid #eee !important; color: #000 !important; margin-bottom: 15px !important; padding-bottom: 5px !important; }
             
             /* Cajas de resumen numérico sin fondos oscuros */
@@ -251,7 +254,7 @@ HTML_TEMPLATE = """
             
             /* Anexos: Multi-columna, fotos miniatura, sin cajas oscuras */
             .anexos-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 10px !important; }
-            .anexos-grid .card { background: #fff !important; border: 1px solid #ddd !important; box-shadow: none !important; margin-bottom: 0 !important; page-break-inside: avoid; }
+            .anexos-grid .card { background: #fff !important; border: 1px solid #ddd !important; box-shadow: none !important; margin-bottom: 0 !important; }
             .card-img-wrapper { background: #fff !important; height: 120px !important; padding: 2px !important; border-bottom: 1px solid #eee !important; }
             .metrics-container { background: #fafafa !important; padding: 10px !important; }
             .metric-row { border-bottom: 1px dotted #ccc !important; padding: 4px 0 !important; }
@@ -263,7 +266,7 @@ HTML_TEMPLATE = """
             .card[style*="border: 2px solid var(--accent)"], .card[style*="border: 2px solid #FFD700"] { border: 2px solid var(--accent) !important; }
             .card[style*="border: 2px solid #94a3b8"], .card[style*="border: 2px solid #C0C0C0"] { border: 2px solid #666 !important; }
             .card[style*="border: 2px solid #b45309"], .card[style*="border: 2px solid #CD7F32"] { border: 2px solid #b45309 !important; }
-
+            
             /* Demografía adaptada a hoja blanca */
             .section-box > div[style*="grid-template-columns"] { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 15px !important; }
             .section-box > div > div { background: #fff !important; border: 1px solid #ddd !important; box-shadow: none !important; }
@@ -275,7 +278,7 @@ HTML_TEMPLATE = """
             .footer-col h4, .footer-col p, .footer-col a, .footer-col span { color: #000 !important; }
             .footer-col h4 { border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; font-size: 10pt !important; }
             .footer-col ul li { line-height: 1.2 !important; margin-bottom: 5px !important; font-size: 8pt !important; }
-            .container > p { color: #555 !important; border-top: none !important; margin-top: 0 !important; padding-top: 0 !important; }
+            .container > p { color: #555 !important; border-top: none !important; margin-top: 0 !important; padding-pt: 0 !important; }
             .text-accent, .text-yellow { color: var(--accent) !important; }
         }
     </style>

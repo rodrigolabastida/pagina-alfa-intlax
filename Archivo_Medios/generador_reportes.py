@@ -257,48 +257,50 @@ HTML_TEMPLATE = """
                 overflow: hidden !important;
             }
 
+            /* ESPACIAMIENTO AMPLIO Y SALTOS DE PÁGINA FORZADOS */
+            .section-box {
+                page-break-before: always !important; /* Cada sección principal inicia en hoja nueva */
+                background: #fff !important;
+                border: none !important;
+                padding: 0 !important;
+                margin-bottom: 50px !important;
+            }
+            .section-box:first-of-type { page-break-before: auto !important; } /* Menos la primera */
+
             /* Reajuste de textos para que quepan en 3 columnas */
             .summary-card .value { font-size: 14pt !important; }
             .summary-card .label { font-size: 8pt !important; }
             .post-title-extract { font-size: 7.5pt !important; height: 2.6em !important; }
 
-            /* Galería de Evidencias (2 columnas ultra-estables) */
+            /* Galería Dossier (1 por fila para 0 recortes) */
             .gallery-grid {
                 display: block !important;
                 width: 100% !important;
-                text-align: left !important;
             }
 
             .gallery-grid .card {
-                width: 45% !important;
-                display: inline-block !important;
-                vertical-align: top !important;
-                margin: 1.5% !important;
-                margin-bottom: 25px !important;
-                border: 1px solid #eee !important;
-                break-inside: avoid !important;
+                width: 100% !important;
+                display: block !important;
+                margin-bottom: 50px !important; /* Mucho espacio en blanco entre testigos */
                 page-break-inside: avoid !important;
-                background: #fff !important;
+                break-inside: avoid !important;
+                border: 1px solid #eee !important;
             }
 
             .card-img-wrapper { 
                 height: auto !important;
-                max-height: 15cm !important; /* Límite estricto para evitar cortes */
-                overflow: hidden !important;
-                border-bottom: 1px solid #eee !important;
+                max-height: none !important; /* Dejar que ocupe lo que necesite */
+                overflow: visible !important;
                 display: block !important;
-                padding: 5px !important;
-                break-inside: avoid !important;
+                padding: 20px !important;
             }
             
             .card img { 
-                width: auto !important;
+                width: 100% !important;
                 max-width: 100% !important;
                 height: auto !important; 
-                max-height: 100% !important;
                 display: block !important;
                 margin: 0 auto !important;
-                break-inside: avoid !important;
             }
 
             .metrics-container { 

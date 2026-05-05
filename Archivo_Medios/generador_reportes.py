@@ -217,6 +217,7 @@ HTML_TEMPLATE = """
         /* ============================================================== */
         /* --- MEDIA PRINT (TEMA CLARO EXCLUSIVO DE PDF Y AHORRO) --- */
         /* ============================================================== */
+        @media print {
             /* Estabilización de Saltos de Página (Evita recortes de imágenes) */
             header, .section-box, .card, .summary-card, .mom-card {
                 break-inside: avoid !important;
@@ -278,7 +279,7 @@ HTML_TEMPLATE = """
             .footer-col h4, .footer-col p, .footer-col a, .footer-col span { color: #000 !important; }
             .footer-col h4 { border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; font-size: 10pt !important; }
             .footer-col ul li { line-height: 1.2 !important; margin-bottom: 5px !important; font-size: 8pt !important; }
-            .container > p { color: #555 !important; border-top: none !important; margin-top: 0 !important; padding-pt: 0 !important; }
+            .container > p { color: #555 !important; border-top: none !important; margin-top: 0 !important; padding-top: 0 !important; }
             .text-accent, .text-yellow { color: var(--accent) !important; }
         }
     </style>

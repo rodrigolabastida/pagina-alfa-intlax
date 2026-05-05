@@ -218,68 +218,79 @@ HTML_TEMPLATE = """
         /* --- MEDIA PRINT (TEMA CLARO EXCLUSIVO DE PDF Y AHORRO) --- */
         /* ============================================================== */
         @media print {
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            body { background-color: #ffffff !important; color: #000000 !important; font-size: 9pt; }
-            .container { max-width: 100% !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }
-            .print-btn { display: none !important; }
-
-            /* Estabilización de Saltos de Página */
-            .section-box, .card, .summary-card, .mom-card {
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-                display: block !important;
-                margin-bottom: 15px !important;
+            /* Fuerza Bruta: Fondo Blanco y Texto Negro */
+            * { 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+                background-color: transparent !important; 
+                color: #000000 !important;
+                box-shadow: none !important;
+                text-shadow: none !important;
+            }
+            
+            body, html, .container, .section-box, .card, .summary-card, .mom-card, .metrics-container, .card-img-wrapper {
+                background-color: #ffffff !important;
+                background: #ffffff !important;
             }
 
-            /* Portada Ligera */
-            header { background: #fff !important; border: 1px solid #ddd !important; padding: 15px !important; margin-bottom: 20px !important; }
-            header::before { background: var(--accent) !important; height: 4px !important; }
-            .main-title { font-size: 18pt !important; }
-            
-            /* Distribución en 2 Columnas (Estable para PDF) */
-            .gallery-grid, .anexos-grid {
+            body { font-size: 9pt; }
+            .print-btn { display: none !important; }
+            header::before { background: #ca8a04 !important; height: 4px !important; }
+
+            /* SECCIONES HORIZONTALES (Top 3 y Métricas) */
+            .summary-grid, .anexos-grid, .mom-grid, .gallery-grid {
                 display: block !important;
                 width: 100% !important;
                 clear: both !important;
             }
 
-            .card {
+            /* 3 Objetos en formato horizontal (Resumen y Top 3) */
+            .summary-card, .mom-card, .anexos-grid .card {
+                width: 32% !important;
+                display: inline-block !important;
+                vertical-align: top;
+                margin: 0.5% !important;
+                border: 1px solid #ddd !important;
+                padding: 10px !important;
+            }
+
+            /* Galería de Evidencias (2 columnas para que se vean bien las capturas) */
+            .gallery-grid .card {
                 width: 48% !important;
                 display: inline-block !important;
                 vertical-align: top;
                 margin: 0.8% !important;
                 border: 1px solid #eee !important;
-                background: #fff !important;
             }
 
-            /* LIMITAR ALTURA DE IMAGEN (Crucial para no cortar) */
             .card-img-wrapper { 
                 height: auto !important;
-                max-height: 18cm !important; /* Evita que la foto sea más alta que la hoja */
+                max-height: 16cm !important;
                 overflow: hidden !important;
-                background: #fff !important;
-                padding: 5px !important;
+                border-bottom: 1px solid #eee !important;
                 display: flex !important;
-                align-items: flex-start !important;
+                align-items: center;
+                justify-content: center;
+                padding: 0 !important;
             }
-            .card img { 
-                width: 100% !important;
-                height: auto !important; 
-                object-fit: contain !important;
-            }
-
-            .metrics-container { background: #f9f9f9 !important; padding: 8px !important; border-top: 1px solid #eee !important; }
-            .metric-row { display: flex !important; justify-content: space-between !important; font-size: 8pt !important; padding: 3px 0 !important; border-bottom: 1px dotted #ccc !important; }
-            .post-title-extract { font-size: 8pt !important; height: auto !important; max-height: 3em !important; margin-bottom: 5px !important; }
             
-            /* Resumen Numérico */
-            .summary-grid { display: block !important; }
-            .summary-card { width: 31% !important; display: inline-block !important; margin: 1% !important; }
+            .card img { 
+                width: auto !important;
+                max-width: 100% !important;
+                height: auto !important; 
+                max-height: 100% !important;
+            }
 
-            /* Footer */
-            footer { background: #fff !important; border-top: 1px solid #000 !important; padding: 10px 0 !important; }
+            .metrics-container { border-top: 1px solid #eee !important; padding: 5px !important; }
+            .metric-row { border-bottom: 1px dotted #ccc !important; padding: 2px 0 !important; }
+            .post-title-extract { font-size: 8pt !important; border-bottom: 1px solid #eee !important; }
+            
+            /* Bordes de Podio (Top 3) */
+            .card[style*="border"] { border-width: 1px !important; }
+            
+            footer { border-top: 1px solid #000 !important; margin-top: 20px !important; }
             .footer-grid { display: flex !important; justify-content: space-between !important; }
-            .footer-col { width: 30% !important; font-size: 8pt !important; }
+            .footer-col { width: 30% !important; }
         }
     </style>
 </head>

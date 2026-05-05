@@ -262,31 +262,32 @@ HTML_TEMPLATE = """
             .summary-card .label { font-size: 8pt !important; }
             .post-title-extract { font-size: 7.5pt !important; height: 2.6em !important; }
 
-            /* Galería de Evidencias (2 columnas para legibilidad) */
+            /* Galería de Evidencias (2 columnas ultra-estables) */
             .gallery-grid {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                gap: 15px !important;
-                justify-content: space-between !important;
+                display: block !important;
+                width: 100% !important;
+                text-align: left !important;
             }
 
             .gallery-grid .card {
-                width: calc(50% - 10px) !important;
-                margin: 0 !important;
+                width: 45% !important;
+                display: inline-block !important;
+                vertical-align: top !important;
+                margin: 1.5% !important;
                 margin-bottom: 25px !important;
                 border: 1px solid #eee !important;
                 break-inside: avoid !important;
                 page-break-inside: avoid !important;
-                display: block !important;
+                background: #fff !important;
             }
 
             .card-img-wrapper { 
                 height: auto !important;
-                max-height: 20cm !important;
-                overflow: visible !important; /* Evitar que oculte las métricas si hay un error de cálculo */
+                max-height: 15cm !important; /* Límite estricto para evitar cortes */
+                overflow: hidden !important;
                 border-bottom: 1px solid #eee !important;
                 display: block !important;
-                padding: 0 !important;
+                padding: 5px !important;
                 break-inside: avoid !important;
             }
             
@@ -297,6 +298,7 @@ HTML_TEMPLATE = """
                 max-height: 100% !important;
                 display: block !important;
                 margin: 0 auto !important;
+                break-inside: avoid !important;
             }
 
             .metrics-container { 
